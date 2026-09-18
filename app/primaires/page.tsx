@@ -1,5 +1,6 @@
 import { connection } from "next/server";
 import { supabase } from "../../lib/supabase";
+import SiteNav from "../site-nav";
 
 type Process = {
   id: string;
@@ -142,21 +143,7 @@ export default async function PrimairesPage() {
     <main className="page primary-page">
       <a className="skip-link" href="#processus">Aller aux processus</a>
 
-      <header className="header">
-        <div className="container nav">
-          <a className="brand" href="/">
-            Élections <span>2027</span>
-            <span className="brand-dot" aria-hidden="true" />
-          </a>
-          <nav aria-label="Navigation principale">
-            <a href="/#candidats">Candidats</a>
-            <a href="/primaires" className="nav-current">Primaires</a>
-            <a href="/#propositions">Propositions</a>
-            <a href="/#sondages">Sondages</a>
-            <a href="/#agenda" className="nav-agenda">Agenda ↗</a>
-          </nav>
-        </div>
-      </header>
+      <SiteNav />
 
       <section className="primary-hero">
         <div className="container primary-hero-grid">
