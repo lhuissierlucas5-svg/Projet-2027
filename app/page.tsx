@@ -92,7 +92,7 @@ export default async function Home() {
 
   return (
     <main className="page">
-      <a className="skip-link" href="#candidats">Aller au contenu</a>
+      <a className="skip-link" href="/candidats">Aller au contenu</a>
 
       <SiteNav />
 
@@ -108,7 +108,7 @@ export default async function Home() {
               L’essentiel pour vous faire votre opinion.
             </p>
             <div className="actions">
-              <a className="button primary" href="#candidats">
+              <a className="button primary" href="/candidats">
                 Découvrir les candidats <span aria-hidden="true">↗</span>
               </a>
               <a className="button secondary" href="/comparer">
@@ -128,7 +128,7 @@ export default async function Home() {
               </strong>
               <small>Comprendre. Comparer. Choisir.</small>
             </div>
-            <a href="#sondages" className="visual-note note-polls">
+            <a href="/sondages" className="visual-note note-polls">
               <span className="note-icon" aria-hidden="true">▥</span>
               <span><strong>Prendre le pouls</strong><small>Les chiffres, avec leur contexte</small></span>
               <span aria-hidden="true">↗</span>
@@ -158,7 +158,7 @@ export default async function Home() {
       </section>
 
       <div className="container quick-paths" aria-label="Explorer par rubrique">
-        <a href="#propositions">
+        <a href="/propositions">
           <span className="path-icon peach" aria-hidden="true">✦</span>
           <span><strong>Les idées</strong><small>Ce qu’ils proposent</small></span>
           <span aria-hidden="true">↗</span>
@@ -168,7 +168,7 @@ export default async function Home() {
           <span><strong>Les chiffres</strong><small>Ce que disent les sondages</small></span>
           <span aria-hidden="true">↗</span>
         </a>
-        <a href="#agenda">
+        <a href="/agenda">
           <span className="path-icon mint" aria-hidden="true">◷</span>
           <span><strong>Les rendez-vous</strong><small>Où les écouter</small></span>
           <span aria-hidden="true">↗</span>
@@ -289,7 +289,7 @@ export default async function Home() {
       <footer className="container footer">
         <a className="brand" href="/">Élections <span>2027</span></a>
         <p>Votre opinion commence par l’information.</p>
-        <a href="#candidats">Retour aux candidats ↑</a>
+        <a href="/candidats">Voir tous les candidats →</a>
       </footer>
     </main>
   );
