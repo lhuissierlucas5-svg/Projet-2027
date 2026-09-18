@@ -108,7 +108,7 @@ export default async function CandidatePage({
 
       <section className="candidate-hero-v2">
         <div className="container">
-          <a className="back-link candidate-back" href="/#candidats">
+          <a className="back-link candidate-back" href="/candidats">
             ← Tous les candidats
           </a>
 
