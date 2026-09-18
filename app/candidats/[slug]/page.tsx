@@ -53,7 +53,7 @@ export default async function CandidatePage({
     <main className="page">
       <header className="header">
         <div className="container nav">
-          <a className="brand" href="/">Projet 2027</a>
+          <a className="brand" href="/">Élections 2027</a>
           <nav>
             <a href="/#candidats">Candidats</a>
             <a href="/#propositions">Propositions</a>
@@ -129,7 +129,7 @@ export default async function CandidatePage({
       </section>
 
       <footer className="container footer">
-        <p>Projet 2027 — données politiques sourcées</p>
+        <p>Élections 2027 — données politiques sourcées</p>
         <p>Chaque information doit pouvoir remonter à sa source.</p>
       </footer>
     </main>
