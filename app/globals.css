@@ -3092,3 +3092,5 @@ nav a {
     grid-row: auto;
   }
 }
+
+.site-nav-link.nav-accueil { --nav-accent: #171d3b; }
