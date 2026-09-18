@@ -55,6 +55,14 @@ type AgendaItem = {
   source_name: string;
   source_url: string;
   highlight: boolean;
+  image_url: string | null;
+  image_credit: string | null;
+};
+
+type PrimaryFace = {
+  id: string;
+  display_name: string;
+  image_url: string | null;
 };
 
 type Contender = {
@@ -68,6 +76,8 @@ type Contender = {
   source_url: string;
   as_of_date: string;
   sort_order: number;
+  image_url: string | null;
+  image_credit: string | null;
 };
 
 const metrics: Record<string, string> = {
@@ -135,7 +145,7 @@ export default async function CampaignFeed() {
   const pollFields =
     "id,candidate_id,title,summary,source_name,source_url,published_at,verified_at,institute,sponsor,metric_type,scenario,value_percent,fieldwork_start,fieldwork_end,sample_size,population";
 
-  const [polls, candidatesQuery, positionsQuery, agendaQuery, contendersQuery] =
+  const [polls, candidatesQuery, positionsQuery, agendaQuery, contendersQuery, primaryCandidatesQuery] =
     await Promise.all([
       supabase
         .from("campaign_updates")
@@ -158,7 +168,7 @@ export default async function CampaignFeed() {
       supabase
         .from("political_agenda")
         .select(
-          "id,slug,sort_date,date_label,title,category,status,location,organizer,summary,source_name,source_url,highlight"
+          "id,slug,sort_date,date_label,title,category,status,location,organizer,summary,source_name,source_url,highlight,image_url,image_credit"
         )
         .gte("sort_date", today)
         .order("sort_date", { ascending: true })
@@ -166,8 +176,13 @@ export default async function CampaignFeed() {
       supabase
         .from("contender_watch")
         .select(
-          "id,display_name,party,status,status_label,note,source_name,source_url,as_of_date,sort_order"
+          "id,display_name,party,status,status_label,note,source_name,source_url,as_of_date,sort_order,image_url,image_credit"
         )
+        .order("sort_order", { ascending: true }),
+      supabase
+        .from("selection_candidates")
+        .select("id,display_name,image_url")
+        .in("display_name", ["Raphaël Glucksmann","Olivier Faure","Jérôme Guedj","Emmanuel Maurel","Ségolène Royal"])
         .order("sort_order", { ascending: true }),
     ]);
 
@@ -178,6 +193,17 @@ export default async function CampaignFeed() {
     .slice(0, 6);
   const agenda = (agendaQuery.data ?? []) as AgendaItem[];
   const contenders = (contendersQuery.data ?? []) as Contender[];
+  const primaryFaces = (primaryCandidatesQuery.data ?? []) as PrimaryFace[];
+
+  const agendaSymbol: Record<string, string> = {
+    budget: "€",
+    institutional: "🏛",
+    election: "✓",
+    deadline: "⏳",
+    meeting: "●",
+    debate: "✦",
+    primary: "🗳",
+  };
 
   const groups = new Map<string, PollUpdate[]>();
   for (const item of (polls.data ?? []) as PollUpdate[]) {
@@ -313,6 +339,30 @@ export default async function CampaignFeed() {
                   <span>{categoryLabels[item.category] ?? item.category}</span>
                   <strong>{item.date_label}</strong>
                 </div>
+
+                <div className="agenda-visual" aria-hidden="true">
+                  {item.image_url ? (
+                    <img src={item.image_url} alt="" width="112" height="112" loading="lazy" />
+                  ) : item.category === "debate" || item.category === "primary" ? (
+                    <div className="agenda-face-stack">
+                      {primaryFaces.slice(0, 5).map((person) =>
+                        person.image_url ? (
+                          <img
+                            src={person.image_url}
+                            alt=""
+                            width="48"
+                            height="48"
+                            key={person.id}
+                            loading="lazy"
+                          />
+                        ) : null
+                      )}
+                    </div>
+                  ) : (
+                    <span className="agenda-symbol">{agendaSymbol[item.category] ?? "•"}</span>
+                  )}
+                </div>
+
                 <div className="agenda-content-v2">
                   <div className="agenda-status-row">
                     {item.status === "ongoing" && <span className="live-pill">EN COURS</span>}
@@ -330,7 +380,7 @@ export default async function CampaignFeed() {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      Source · {item.source_name} ↗
+                      {item.source_name} ↗
                     </a>
                   </div>
                 </div>
@@ -359,9 +409,20 @@ export default async function CampaignFeed() {
             {contenders.map((person, index) => (
               <article className={`contender-card contender-${person.status}`} key={person.id}>
                 <div className="contender-top">
-                  <span className="contender-initials" aria-hidden="true">
-                    {initials(person.display_name)}
-                  </span>
+                  {person.image_url ? (
+                    <img
+                      className="contender-photo"
+                      src={person.image_url}
+                      alt={person.display_name}
+                      width="66"
+                      height="66"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <span className="contender-initials" aria-hidden="true">
+                      {initials(person.display_name)}
+                    </span>
+                  )}
                   <span className="contender-status">{person.status_label}</span>
                 </div>
                 <h3>{person.display_name}</h3>
