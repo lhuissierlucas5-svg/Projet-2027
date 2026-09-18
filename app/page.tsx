@@ -20,6 +20,8 @@ type Position = {
   position_date: string;
   source_name: string;
   source_url: string;
+  highlight_value: string | null;
+  highlight_label: string | null;
 };
 
 function date(value: string | null) {
@@ -59,7 +61,7 @@ export default async function Home() {
       .maybeSingle(),
     supabase
       .from("candidate_positions")
-      .select("id,candidate_id,topic,title,summary,position_date,source_name,source_url")
+      .select("id,candidate_id,topic,title,summary,position_date,source_name,source_url,highlight_value,highlight_label")
       .eq("verification_status", "verified")
       .eq("featured", true)
       .order("position_date", { ascending: false }),
@@ -76,6 +78,11 @@ export default async function Home() {
   };
 
   const latestPosition = new Map<string, Position>();
+  for (const position of positions.filter((item) => item.highlight_value)) {
+    if (!latestPosition.has(position.candidate_id)) {
+      latestPosition.set(position.candidate_id, position);
+    }
+  }
   for (const position of positions) {
     if (!latestPosition.has(position.candidate_id)) {
       latestPosition.set(position.candidate_id, position);
@@ -234,15 +241,20 @@ export default async function Home() {
                           <span>{topicLabel(position.topic)}</span>
                           <time dateTime={position.position_date}>{date(position.position_date)}</time>
                         </div>
-                        <strong>{position.title}</strong>
-                        <p>{position.summary}</p>
+                        {position.highlight_value && (
+                          <div className="candidate-key-number">
+                            <strong>{position.highlight_value}</strong>
+                            <span>{position.highlight_label}</span>
+                          </div>
+                        )}
+                        <h4>{position.title}</h4>
                         <a
                           href={position.source_url}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="source-link"
                         >
-                          Source : {position.source_name} ↗
+                          Vérifier · {position.source_name} ↗
                         </a>
                       </div>
                     )}
