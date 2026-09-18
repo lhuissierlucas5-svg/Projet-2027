@@ -90,7 +90,15 @@ export default async function PrimairesPage() {
       .order("published_at", { ascending: false }),
   ]);
 
-  const processes = (processesQuery.data ?? []) as Process[];
+  const processes = ((processesQuery.data ?? []) as Process[]).sort((a, b) => {
+    const rank = { ongoing: 0, upcoming: 0, completed: 1, cancelled: 2 };
+    const statusDifference = rank[a.status] - rank[b.status];
+    if (statusDifference !== 0) return statusDifference;
+
+    const dateA = a.first_round_date ?? a.result_date ?? "1900-01-01";
+    const dateB = b.first_round_date ?? b.result_date ?? "1900-01-01";
+    return dateB.localeCompare(dateA);
+  });
   const candidates = (candidatesQuery.data ?? []) as SelectionCandidate[];
   const polls = (pollsQuery.data ?? []) as PollIndicator[];
 
@@ -210,6 +218,12 @@ export default async function PrimairesPage() {
                                 {candidate.result_percent.toLocaleString("fr-FR")}%
                               </strong>
                               {candidate.result_note && <small>{candidate.result_note}</small>}
+                            </>
+                          ) : candidate.candidature_status === "winner" && candidate.result_note ? (
+                            <>
+                              <span className="data-label">Désignation officielle</span>
+                              <strong>Candidat désigné</strong>
+                              <small>{candidate.result_note}</small>
                             </>
                           ) : poll ? (
                             <>
