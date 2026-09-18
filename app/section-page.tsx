@@ -144,6 +144,31 @@ const metrics: Record<string, string> = {
   desired_participation: "Participation souhaitée",
 };
 
+const pollStageOrder: Record<string, number> = {
+  presidential_vote_intention: 0,
+  presidential_second_round_vote_intention: 1,
+  primary_vote_intention: 2,
+  favorability: 3,
+  desired_participation: 4,
+};
+
+function comparePollGroups(
+  [, a]: [string, PollUpdate[]],
+  [, b]: [string, PollUpdate[]]
+) {
+  const firstA = a[0];
+  const firstB = b[0];
+  const stageA = pollStageOrder[firstA.metric_type ?? ""] ?? 99;
+  const stageB = pollStageOrder[firstB.metric_type ?? ""] ?? 99;
+
+  if (stageA !== stageB) return stageA - stageB;
+
+  const dateOrder = firstB.published_at.localeCompare(firstA.published_at);
+  if (dateOrder !== 0) return dateOrder;
+
+  return (firstA.scenario ?? "").localeCompare(firstB.scenario ?? "", "fr");
+}
+
 function date(value: string | null) {
   if (!value) return "Non précisé";
   return new Date(value.length === 10 ? `${value}T12:00:00Z` : value).toLocaleDateString("fr-FR", {
@@ -540,7 +565,7 @@ async function PollsContent() {
       </div>
 
       <div className="poll-page-stack">
-        {[...groups.entries()].map(([key, entries]) => {
+        {[...groups.entries()].sort(comparePollGroups).map(([key, entries]) => {
           const first = entries[0];
           const sorted = [...entries].sort((a, b) => Number(b.value_percent) - Number(a.value_percent));
 
