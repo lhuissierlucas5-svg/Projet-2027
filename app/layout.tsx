@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Projet 2027",
+  title: "Élections 2027",
   description: "Une plateforme de référence pour suivre la politique française dans le temps.",
 };
 
