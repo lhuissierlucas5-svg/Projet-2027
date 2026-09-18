@@ -321,7 +321,7 @@ export default async function CampaignFeed() {
             <p className="eyebrow">03 / AGENDA POLITIQUE</p>
             <h2>Les prochaines dates<span>.</span></h2>
           </div>
-          <p>Débats, primaire, budget et échéances électorales.</p>
+          <p>Un coup d’œil suffit : date, événement, contexte.</p>
         </div>
 
         {agendaQuery.error ? (
