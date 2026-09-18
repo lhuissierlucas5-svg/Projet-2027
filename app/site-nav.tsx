@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 const homeSections = ["candidats", "propositions", "candidatures", "sondages", "agenda"];
 
 const items = [
+  { key: "accueil", label: "Accueil", href: "/" },
   { key: "candidats", label: "Candidats", href: "/#candidats" },
   { key: "comparer", label: "Comparer", href: "/comparer" },
   { key: "primaires", label: "Primaires", href: "/primaires" },
@@ -16,7 +17,7 @@ const items = [
 
 export default function SiteNav() {
   const pathname = usePathname();
-  const [homeActive, setHomeActive] = useState("");
+  const [homeActive, setHomeActive] = useState("accueil");
 
   useEffect(() => {
     if (pathname !== "/") return;
@@ -39,7 +40,16 @@ export default function SiteNav() {
     );
 
     sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
+
+    const onScroll = () => {
+      if (window.scrollY < 360) setHomeActive("accueil");
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", onScroll);
+    };
   }, [pathname]);
 
   function isActive(key: string) {
