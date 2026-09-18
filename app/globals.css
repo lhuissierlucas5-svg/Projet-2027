@@ -1325,3 +1325,419 @@ h1 em { color: var(--accent); font-style: normal; }
     height: 64px;
   }
 }
+
+
+/* Positions concrètes — accueil */
+.candidate-position-preview {
+  --topic-accent: #554ac3;
+  --topic-soft: #f0efff;
+  margin: 2px 0 14px;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--topic-accent) 18%, white);
+  border-radius: 14px;
+  background: var(--topic-soft);
+}
+.candidate-position-preview.topic-pouvoir-achat { --topic-accent: #24745e; --topic-soft: #e9f6f0; }
+.candidate-position-preview.topic-fiscalite { --topic-accent: #3e64b4; --topic-soft: #edf3ff; }
+.candidate-position-preview.topic-immigration { --topic-accent: #9a5b2d; --topic-soft: #fff1e5; }
+.candidate-position-preview.topic-guerre-defense { --topic-accent: #a24458; --topic-soft: #fff0f3; }
+.candidate-position-preview.topic-ecologie { --topic-accent: #3c7b48; --topic-soft: #ecf7e9; }
+.position-preview-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--topic-accent);
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.position-preview-meta time {
+  color: #757c8c;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.candidate-position-preview > strong {
+  display: block;
+  margin-top: 9px;
+  font-size: 14px;
+  line-height: 1.35;
+  letter-spacing: -.02em;
+}
+.candidate-position-preview > p {
+  margin: 7px 0 0;
+  color: #60697c;
+  font-size: 11px;
+  line-height: 1.55;
+}
+.candidate-position-preview .source-link {
+  margin-top: 9px;
+  color: var(--topic-accent);
+  font-size: 10px;
+}
+
+/* Fiches candidats — UX/UI v2 */
+.candidate-page-v2 {
+  --candidate-ink: #17203b;
+}
+.candidate-page-v2 .nav-current {
+  color: var(--accent);
+  position: relative;
+}
+.candidate-page-v2 .nav-current::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 2px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+.candidate-hero-v2 {
+  padding: 34px 0 56px;
+  background:
+    radial-gradient(circle at 88% 12%, #e9e7ff 0, transparent 32%),
+    linear-gradient(180deg, #f9faff 0%, #f4f6fb 100%);
+}
+.candidate-back {
+  margin-bottom: 22px;
+}
+.candidate-hero-grid-v2 {
+  display: grid;
+  grid-template-columns: minmax(260px, .68fr) minmax(0, 1.32fr);
+  gap: 52px;
+  align-items: center;
+}
+.candidate-portrait-v2 {
+  position: relative;
+  height: 430px;
+  overflow: hidden;
+  border-radius: 30px;
+  background: #e6e5f4;
+  box-shadow: 0 24px 58px #2c335116;
+}
+.candidate-portrait-v2 img {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 16%;
+}
+.candidate-portrait-fallback {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: #5750bd;
+  font-size: 80px;
+  font-weight: 800;
+}
+.candidate-portrait-year {
+  position: absolute;
+  z-index: 1;
+  right: -8px;
+  bottom: -24px;
+  color: #d8d5ed;
+  font-size: 118px;
+  font-weight: 900;
+  letter-spacing: -10px;
+}
+.candidate-hero-copy-v2 h1 {
+  max-width: 720px;
+  font-size: clamp(48px, 7vw, 78px);
+}
+.candidate-party-v2 {
+  margin: 15px 0 0;
+  color: #4f48b1;
+  font-size: 15px;
+  font-weight: 800;
+}
+.candidate-intro {
+  max-width: 650px;
+  margin: 22px 0 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.65;
+}
+.candidate-topic-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 25px;
+}
+.topic-chip {
+  --topic-accent: #564ec5;
+  --topic-soft: #efedff;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--topic-soft);
+  color: var(--topic-accent);
+  font-size: 10px;
+  font-weight: 800;
+}
+.topic-chip:hover {
+  text-decoration: none;
+  box-shadow: inset 0 0 0 1px var(--topic-accent);
+}
+.topic-chip.topic-pouvoir-achat { --topic-accent: #24745e; --topic-soft: #e6f5ee; }
+.topic-chip.topic-fiscalite { --topic-accent: #3e64b4; --topic-soft: #eaf1ff; }
+.topic-chip.topic-immigration { --topic-accent: #995829; --topic-soft: #fff0e3; }
+.topic-chip.topic-guerre-defense { --topic-accent: #a03e55; --topic-soft: #ffeef2; }
+.topic-chip.topic-ecologie { --topic-accent: #347644; --topic-soft: #eaf6e7; }
+.candidate-hero-credit {
+  margin-top: 20px;
+}
+.candidate-highlights,
+.candidate-positions-section {
+  padding-top: 54px;
+}
+.candidate-section-heading {
+  align-items: end;
+}
+.candidate-highlight-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.candidate-highlight-card {
+  --topic-accent: #554ac3;
+  --topic-soft: #f0efff;
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+  padding: 22px;
+  border: 1px solid color-mix(in srgb, var(--topic-accent) 17%, white);
+  border-radius: 20px;
+  background: linear-gradient(155deg, var(--topic-soft), #fff 76%);
+}
+.candidate-highlight-card.topic-pouvoir-achat,
+.candidate-topic-section.topic-pouvoir-achat { --topic-accent: #24745e; --topic-soft: #e9f6f0; }
+.candidate-highlight-card.topic-fiscalite,
+.candidate-topic-section.topic-fiscalite { --topic-accent: #3e64b4; --topic-soft: #edf3ff; }
+.candidate-highlight-card.topic-immigration,
+.candidate-topic-section.topic-immigration { --topic-accent: #9a5b2d; --topic-soft: #fff1e5; }
+.candidate-highlight-card.topic-guerre-defense,
+.candidate-topic-section.topic-guerre-defense { --topic-accent: #a24458; --topic-soft: #fff0f3; }
+.candidate-highlight-card.topic-ecologie,
+.candidate-topic-section.topic-ecologie { --topic-accent: #3c7b48; --topic-soft: #ecf7e9; }
+.highlight-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--topic-accent);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.highlight-icon {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: var(--topic-soft);
+  font-size: 14px;
+}
+.candidate-highlight-card h3 {
+  margin: 20px 0 10px;
+  font-size: 21px;
+  line-height: 1.15;
+  letter-spacing: -.035em;
+}
+.candidate-highlight-card > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.position-source-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 20px;
+  color: #767e90;
+  font-size: 9px;
+}
+.position-source-row a {
+  color: var(--topic-accent);
+  font-weight: 800;
+}
+.candidate-positions-section {
+  padding-bottom: 30px;
+}
+.candidate-topic-sections {
+  display: grid;
+  gap: 18px;
+}
+.candidate-topic-section {
+  --topic-accent: #554ac3;
+  --topic-soft: #f0efff;
+  scroll-margin-top: 24px;
+  padding: 24px;
+  border: 1px solid #e3e6ef;
+  border-radius: 22px;
+  background: #fff;
+}
+.candidate-topic-heading {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #e8eaf1;
+}
+.topic-heading-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--topic-soft);
+  color: var(--topic-accent);
+  font-size: 20px;
+  font-weight: 800;
+}
+.candidate-topic-heading h3 {
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: -.035em;
+}
+.candidate-topic-heading p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+.topic-count {
+  min-width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--topic-soft);
+  color: var(--topic-accent);
+  font-size: 10px;
+  font-weight: 800;
+}
+.position-timeline {
+  position: relative;
+  display: grid;
+  gap: 0;
+  margin-top: 8px;
+}
+.position-timeline-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 13px;
+  padding: 18px 0;
+}
+.position-timeline-card:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 32px;
+  bottom: -5px;
+  width: 1px;
+  background: color-mix(in srgb, var(--topic-accent) 25%, white);
+}
+.timeline-marker {
+  width: 11px;
+  height: 11px;
+  margin-top: 4px;
+  border: 3px solid var(--topic-soft);
+  border-radius: 50%;
+  background: var(--topic-accent);
+}
+.position-timeline-content time {
+  color: var(--topic-accent);
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+.position-timeline-content h4 {
+  margin: 7px 0 7px;
+  font-size: 17px;
+  letter-spacing: -.025em;
+}
+.position-timeline-content > p {
+  max-width: 780px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.65;
+}
+.position-timeline-content .source-link {
+  margin-top: 9px;
+  color: var(--topic-accent);
+  font-size: 10px;
+}
+.candidate-methodology {
+  margin-top: 20px;
+  margin-bottom: 50px;
+  background: #f0efff;
+  border-color: #dfdcfa;
+}
+
+@media (max-width: 900px) {
+  .candidate-hero-grid-v2 {
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: 30px;
+  }
+  .candidate-portrait-v2 {
+    height: 360px;
+  }
+  .candidate-highlight-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .candidate-highlight-card:last-child {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 680px) {
+  .candidate-hero-v2 {
+    padding-top: 25px;
+  }
+  .candidate-hero-grid-v2 {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+  .candidate-portrait-v2 {
+    width: min(100%, 360px);
+    height: 410px;
+  }
+  .candidate-hero-copy-v2 h1 {
+    font-size: clamp(44px, 13vw, 64px);
+  }
+  .candidate-highlight-grid {
+    grid-template-columns: 1fr;
+  }
+  .candidate-highlight-card:last-child {
+    grid-column: auto;
+  }
+  .candidate-topic-section {
+    padding: 18px;
+  }
+  .candidate-topic-heading {
+    grid-template-columns: 42px 1fr auto;
+  }
+  .topic-heading-icon {
+    width: 42px;
+    height: 42px;
+  }
+  .position-source-row {
+    flex-direction: column;
+    gap: 6px;
+  }
+}
