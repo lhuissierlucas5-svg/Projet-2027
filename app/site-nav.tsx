@@ -9,6 +9,7 @@ const items = [
   { key: "accueil", label: "Accueil", href: "/" },
   { key: "candidats", label: "Candidats", href: "/#candidats" },
   { key: "comparer", label: "Comparer", href: "/comparer" },
+  { key: "propositions", label: "Propositions", href: "/#propositions" },
   { key: "primaires", label: "Primaires", href: "/primaires" },
   { key: "candidatures", label: "Candidatures", href: "/#candidatures" },
   { key: "sondages", label: "Sondages", href: "/#sondages" },
@@ -22,33 +23,37 @@ export default function SiteNav() {
   useEffect(() => {
     if (pathname !== "/") return;
 
+    const updateActiveSection = () => {
+      if (window.scrollY < 300) {
+        setHomeActive("accueil");
+        return;
+      }
+
+      const probeY = 170;
+      let current = "candidats";
+
+      for (const id of homeSections) {
+        const section = document.getElementById(id);
+        if (!section) continue;
+
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= probeY) current = id;
+        if (rect.top > probeY) break;
+      }
+
+      setHomeActive(current);
+    };
+
     const fromHash = window.location.hash.replace("#", "");
     if (homeSections.includes(fromHash)) setHomeActive(fromHash);
 
-    const sections = homeSections
-      .map((id) => document.getElementById(id))
-      .filter((element): element is HTMLElement => Boolean(element));
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible?.target.id) setHomeActive(visible.target.id);
-      },
-      { rootMargin: "-20% 0px -62% 0px", threshold: [0, 0.15, 0.35, 0.6] }
-    );
-
-    sections.forEach((section) => observer.observe(section));
-
-    const onScroll = () => {
-      if (window.scrollY < 360) setHomeActive("accueil");
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
+    updateActiveSection();
+    window.addEventListener("scroll", updateActiveSection, { passive: true });
+    window.addEventListener("resize", updateActiveSection);
 
     return () => {
-      observer.disconnect();
-      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("scroll", updateActiveSection);
+      window.removeEventListener("resize", updateActiveSection);
     };
   }, [pathname]);
 
