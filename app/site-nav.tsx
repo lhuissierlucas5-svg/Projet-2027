@@ -1,68 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-
-const homeSections = ["candidats", "propositions", "candidatures", "sondages", "agenda"];
 
 const items = [
   { key: "accueil", label: "Accueil", href: "/" },
-  { key: "candidats", label: "Candidats", href: "/#candidats" },
+  { key: "candidats", label: "Candidats", href: "/candidats" },
   { key: "comparer", label: "Comparer", href: "/comparer" },
-  { key: "propositions", label: "Propositions", href: "/#propositions" },
+  { key: "propositions", label: "Propositions", href: "/propositions" },
   { key: "primaires", label: "Primaires", href: "/primaires" },
-  { key: "candidatures", label: "Candidatures", href: "/#candidatures" },
-  { key: "sondages", label: "Sondages", href: "/#sondages" },
-  { key: "agenda", label: "Agenda", href: "/#agenda" },
+  { key: "candidatures", label: "Candidatures", href: "/candidatures" },
+  { key: "sondages", label: "Sondages", href: "/sondages" },
+  { key: "agenda", label: "Agenda", href: "/agenda" },
 ];
 
 export default function SiteNav() {
   const pathname = usePathname();
-  const [homeActive, setHomeActive] = useState("accueil");
 
-  useEffect(() => {
-    if (pathname !== "/") return;
-
-    const updateActiveSection = () => {
-      if (window.scrollY < 300) {
-        setHomeActive("accueil");
-        return;
-      }
-
-      const probeY = 170;
-      let current = "candidats";
-
-      for (const id of homeSections) {
-        const section = document.getElementById(id);
-        if (!section) continue;
-
-        const rect = section.getBoundingClientRect();
-        if (rect.top <= probeY) current = id;
-        if (rect.top > probeY) break;
-      }
-
-      setHomeActive(current);
-    };
-
-    const fromHash = window.location.hash.replace("#", "");
-    if (homeSections.includes(fromHash)) setHomeActive(fromHash);
-
-    updateActiveSection();
-    window.addEventListener("scroll", updateActiveSection, { passive: true });
-    window.addEventListener("resize", updateActiveSection);
-
-    return () => {
-      window.removeEventListener("scroll", updateActiveSection);
-      window.removeEventListener("resize", updateActiveSection);
-    };
-  }, [pathname]);
-
-  function isActive(key: string) {
-    if (pathname.startsWith("/candidats/")) return key === "candidats";
-    if (pathname === "/primaires") return key === "primaires";
-    if (pathname === "/comparer") return key === "comparer";
-    if (pathname === "/") return homeActive === key;
-    return false;
+  function isActive(key: string, href: string) {
+    if (key === "accueil") return pathname === "/";
+    if (key === "candidats") return pathname === "/candidats" || pathname.startsWith("/candidats/");
+    return pathname === href || pathname.startsWith(`${href}/`);
   }
 
   return (
@@ -75,7 +32,7 @@ export default function SiteNav() {
 
         <nav className="site-nav-scroll" aria-label="Navigation principale">
           {items.map((item) => {
-            const active = isActive(item.key);
+            const active = isActive(item.key, item.href);
             return (
               <a
                 href={item.href}
