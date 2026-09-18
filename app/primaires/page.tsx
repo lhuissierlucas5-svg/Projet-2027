@@ -108,7 +108,7 @@ export default async function PrimairesPage() {
     <main className="page">
       <header className="header">
         <div className="container nav">
-          <a className="brand" href="/">Projet 2027</a>
+          <a className="brand" href="/">Élections 2027</a>
           <nav>
             <a href="/#candidats">Candidats</a>
             <a href="/primaires">Primaires</a>
@@ -289,7 +289,7 @@ export default async function PrimairesPage() {
       </section>
 
       <footer className="container footer">
-        <p>Projet 2027 — primaires et désignations sourcées</p>
+        <p>Élections 2027 — primaires et désignations sourcées</p>
         <p>Pas de probabilité fabriquée : données publiées, dates et méthode.</p>
       </footer>
     </main>
