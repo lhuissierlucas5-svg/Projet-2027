@@ -1,6 +1,7 @@
 import { connection } from "next/server";
 import { notFound } from "next/navigation";
 import { supabase } from "../../../lib/supabase";
+import SiteNav from "../../site-nav";
 
 type Candidate = {
   id: string;
@@ -103,21 +104,7 @@ export default async function CandidatePage({
     <main className="page candidate-page-v2">
       <a className="skip-link" href="#positions">Aller aux positions</a>
 
-      <header className="header">
-        <div className="container nav">
-          <a className="brand" href="/">
-            Élections <span>2027</span>
-            <span className="brand-dot" aria-hidden="true" />
-          </a>
-          <nav aria-label="Navigation principale">
-            <a href="/#candidats" className="nav-current">Candidats</a>
-            <a href="/primaires">Primaires</a>
-            <a href="/#propositions">Propositions</a>
-            <a href="/#sondages">Sondages</a>
-            <a href="/#agenda" className="nav-agenda">Agenda ↗</a>
-          </nav>
-        </div>
-      </header>
+      <SiteNav />
 
       <section className="candidate-hero-v2">
         <div className="container">
