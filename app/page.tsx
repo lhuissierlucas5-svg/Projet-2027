@@ -103,6 +103,7 @@ export default async function Home() {
             <a href="#candidats">Candidats</a>
             <a href="/primaires">Primaires</a>
             <a href="#propositions">Propositions</a>
+            <a href="#candidatures">Candidatures</a>
             <a href="#sondages">Sondages</a>
             <a href="#agenda" className="nav-agenda">Agenda ↗</a>
           </nav>
