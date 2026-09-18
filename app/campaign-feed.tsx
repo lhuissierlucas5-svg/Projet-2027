@@ -344,11 +344,11 @@ export default async function CampaignFeed() {
         <div className="section-heading campaign-heading">
           <div>
             <p className="eyebrow">04 / LA COURSE S’ÉLARGIT</p>
-            <h2>Qui d’autre peut compter en 2027 ?<span className="accent-dot">.</span></h2>
+            <h2>Autres candidatures et hypothèses<span className="accent-dot">.</span></h2>
           </div>
           <p>
-            Candidatures déclarées, participants à une primaire et hypothèses documentées.
-            Aucun statut n’est présenté comme une prévision.
+            Sélection non exhaustive de candidatures déclarées, participants à une primaire
+            et hypothèses documentées. Aucun statut n’est présenté comme une prévision.
           </p>
         </div>
 
