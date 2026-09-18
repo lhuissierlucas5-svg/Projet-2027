@@ -133,7 +133,7 @@ export default async function Home() {
               <span><strong>Prendre le pouls</strong><small>Les chiffres, avec leur contexte</small></span>
               <span aria-hidden="true">↗</span>
             </a>
-            <a href="#candidats" className="visual-note note-people">
+            <a href="/candidats" className="visual-note note-people">
               <span className="avatar-stack" aria-hidden="true">
                 {candidates.slice(0, 3).map((candidate) => (
                   <span key={candidate.id}>
