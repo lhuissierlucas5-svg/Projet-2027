@@ -81,7 +81,11 @@ export default async function Home() {
                     </div>
                   )}
                   <div className="candidate-name">
-                    <h3>{candidate.display_name}</h3>
+                    <h3>
+                      <a href={`/candidats/${candidate.slug}`}>
+                        {candidate.display_name}
+                      </a>
+                    </h3>
                     <p>{candidate.party ?? "Candidature"}</p>
                   </div>
                 </div>
@@ -102,6 +106,12 @@ export default async function Home() {
                       Source : {candidate.quote_source_name}
                     </a>
                   )}
+                </div>
+
+                <div className="candidate-actions">
+                  <a className="profile-link" href={`/candidats/${candidate.slug}`}>
+                    Voir la fiche et l’historique →
+                  </a>
                 </div>
 
                 {candidate.image_credit && (
