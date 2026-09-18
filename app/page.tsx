@@ -209,7 +209,7 @@ export default async function Home() {
                       <img
                         src={candidate.image_url}
                         alt={candidate.display_name}
-                        className="candidate-photo"
+                        className={`candidate-photo candidate-photo-${candidate.slug}`}
                         loading="lazy"
                         width="360"
                         height="280"
