@@ -1,4 +1,5 @@
 import CampaignFeed from "./campaign-feed";
+import SiteNav from "./site-nav";
 import { connection } from "next/server";
 import { supabase } from "../lib/supabase";
 
@@ -93,22 +94,7 @@ export default async function Home() {
     <main className="page">
       <a className="skip-link" href="#candidats">Aller au contenu</a>
 
-      <header className="header">
-        <div className="container nav">
-          <a className="brand" href="/">
-            Élections <span>2027</span>
-            <span className="brand-dot" aria-hidden="true" />
-          </a>
-          <nav aria-label="Navigation principale">
-            <a href="#candidats">Candidats</a>
-            <a href="/primaires">Primaires</a>
-            <a href="#propositions">Propositions</a>
-            <a href="#candidatures">Candidatures</a>
-            <a href="#sondages">Sondages</a>
-            <a href="#agenda" className="nav-agenda">Agenda ↗</a>
-          </nav>
-        </div>
-      </header>
+      <SiteNav />
 
       <section className="hero">
         <div className="container hero-layout">
@@ -125,8 +111,8 @@ export default async function Home() {
               <a className="button primary" href="#candidats">
                 Découvrir les candidats <span aria-hidden="true">↗</span>
               </a>
-              <a className="button secondary" href="#sondages">
-                Voir les sondages <span aria-hidden="true">→</span>
+              <a className="button secondary" href="/comparer">
+                Comparer les mesures <span aria-hidden="true">→</span>
               </a>
             </div>
             <p className="hero-footnote">Des faits datés. Des sources à consulter.</p>
