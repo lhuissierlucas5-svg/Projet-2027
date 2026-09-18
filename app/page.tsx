@@ -1,4 +1,11 @@
-export default function Home() {
+import { supabase } from "../lib/supabase";
+
+export default async function Home() {
+  const { data: candidates, error } = await supabase
+    .from("candidates")
+    .select("id, display_name, slug")
+    .order("display_name");
+
   return (
     <main className="page">
       <header className="header">
@@ -33,6 +40,11 @@ export default function Home() {
           <span className="number">01</span>
           <h2>Candidats</h2>
           <p>Profils, déclarations, positions et documents publics, avec leurs sources.</p>
+          {error ? (
+            <p className="status">Connexion OK, table candidates à créer.</p>
+          ) : (
+            <p className="status">{candidates?.length ?? 0} candidat(s) enregistré(s).</p>
+          )}
         </article>
         <article className="card" id="propositions">
           <span className="number">02</span>
