@@ -24,7 +24,7 @@ export default async function Home() {
   return <main className="page">
     <a className="skip-link" href="#candidats">Aller au contenu</a>
     <header className="header"><div className="container nav">
-      <a className="brand" href="/">Projet <span>2027</span><span className="brand-dot" aria-hidden="true" /></a>
+      <a className="brand" href="/">Élections <span>2027</span><span className="brand-dot" aria-hidden="true" /></a>
       <nav aria-label="Navigation principale">
         <a href="#candidats">Candidats</a><a href="/primaires">Primaires</a><a href="#propositions">Propositions</a><a href="#sondages">Sondages</a><a href="#agenda" className="nav-agenda">Agenda ↗</a>
       </nav>
@@ -69,6 +69,6 @@ export default async function Home() {
       <div className="primary-symbol" aria-hidden="true">↗</div><div><p className="eyebrow">LE CHEMIN VERS 2027</p><h2>Qui sera désigné ?</h2><p>Les primaires, les candidats et les dates clés.</p>{primary && <div className="process-dates"><span>{status[primary.status] ?? primary.status}</span>{primary.first_round_date && <span>1er tour · {date(primary.first_round_date)}</span>}{primary.second_round_date && <span>2d tour · {date(primary.second_round_date)}</span>}</div>}{primary && <small className="primary-name">{primary.name}</small>}</div><a className="button primary" href="/primaires">Suivre les primaires ↗</a>
     </article></section>
     <CampaignFeed />
-    <footer className="container footer"><a className="brand" href="/">Projet <span>2027</span></a><p>Votre opinion commence par l’information.</p><a href="#candidats">Retour aux candidats ↑</a></footer>
+    <footer className="container footer"><a className="brand" href="/">Élections <span>2027</span></a><p>Votre opinion commence par l’information.</p><a href="#candidats">Retour aux candidats ↑</a></footer>
   </main>;
 }
