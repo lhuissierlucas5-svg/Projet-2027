@@ -376,3 +376,255 @@ h1 {
   .grid { grid-template-columns: 1fr; }
   .footer { flex-direction: column; }
 }
+
+
+/* Primaires et processus de désignation */
+.primaries-preview {
+  padding: 55px 0 25px;
+}
+
+.primary-feature-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(260px, .7fr);
+  gap: 32px;
+  align-items: end;
+  padding: 30px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+}
+
+.primary-feature-card h3 {
+  margin: 16px 0 12px;
+  font-size: clamp(28px, 4vw, 42px);
+  letter-spacing: -.045em;
+}
+
+.primary-feature-card p {
+  max-width: 720px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.preview-action {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.preview-action small {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.primary-page-hero {
+  padding: 80px 0 48px;
+}
+
+.methodology-note {
+  padding: 22px 24px;
+  background: #efefe9;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+}
+
+.methodology-note strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.methodology-note p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.secondary-note {
+  margin-top: 34px;
+  margin-bottom: 54px;
+}
+
+.process-list {
+  display: grid;
+  gap: 24px;
+  padding: 34px 0 20px;
+}
+
+.process-card {
+  padding: 30px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+}
+
+.process-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 26px;
+}
+
+.process-heading h2 {
+  max-width: 760px;
+  margin: 14px 0 8px;
+  font-size: clamp(30px, 4vw, 46px);
+  line-height: 1.05;
+  letter-spacing: -.05em;
+}
+
+.process-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--foreground);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .025em;
+}
+
+.tag.subtle {
+  background: #ecece7;
+  color: var(--foreground);
+}
+
+.process-organizers {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.process-summary {
+  max-width: 850px;
+  margin: 24px 0 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.process-dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 22px 0 0;
+}
+
+.process-dates span {
+  padding: 8px 11px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--muted);
+  font-size: 12px;
+  background: var(--background);
+}
+
+.primary-candidate-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.primary-candidate-card {
+  display: flex;
+  gap: 16px;
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: #fbfbf9;
+}
+
+.candidate-initial {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  flex: 0 0 52px;
+  border-radius: 15px;
+  background: var(--foreground);
+  color: white;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.primary-candidate-main {
+  min-width: 0;
+}
+
+.candidate-party {
+  margin: 0 0 5px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.primary-candidate-main h3 {
+  margin: 0;
+  font-size: 23px;
+  letter-spacing: -.035em;
+}
+
+.position-label {
+  margin: 12px 0 8px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.position-summary {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.candidate-data-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 18px;
+  padding: 14px;
+  border-radius: 14px;
+  background: #eeeeE8;
+}
+
+.data-label {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.candidate-data-box strong {
+  font-size: 23px;
+  letter-spacing: -.025em;
+}
+
+.candidate-data-box small {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.candidate-data-box .source-link {
+  margin-top: 5px;
+}
+
+@media (max-width: 760px) {
+  .primary-feature-card { grid-template-columns: 1fr; align-items: start; }
+  .process-heading { flex-direction: column; }
+  .primary-candidate-grid { grid-template-columns: 1fr; }
+  .process-card { padding: 20px; }
+  .primary-candidate-card { align-items: flex-start; }
+}
