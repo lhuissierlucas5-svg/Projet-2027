@@ -81,7 +81,8 @@ type Contender = {
 };
 
 const metrics: Record<string, string> = {
-  presidential_vote_intention: "Intention de vote présidentielle",
+  presidential_vote_intention: "1er tour — intention de vote",
+  presidential_second_round_vote_intention: "2e tour — duel hypothétique",
   primary_vote_intention: "Intention de vote à une primaire",
   favorability: "Opinion favorable",
   desired_participation: "Participation souhaitée",
