@@ -1,3 +1,5 @@
+import CampaignFeed from "./campaign-feed";
+import { connection } from "next/server";
 import { supabase } from "../lib/supabase";
 
 type Candidate = {
@@ -26,6 +28,7 @@ function formatDate(value: string | null) {
 }
 
 export default async function Home() {
+  await connection();
   const [candidatesQuery, primaryQuery] = await Promise.all([
     supabase
       .from("candidates")
@@ -190,23 +193,7 @@ export default async function Home() {
         </article>
       </section>
 
-      <section className="container grid" id="propositions">
-        <article className="card">
-          <span className="number">03</span>
-          <h2>Propositions</h2>
-          <p>Les propositions classées par thème, date et source originale.</p>
-        </article>
-        <article className="card" id="sondages">
-          <span className="number">04</span>
-          <h2>Sondages</h2>
-          <p>Les résultats et leur méthodologie, conservés pour suivre leur évolution.</p>
-        </article>
-        <article className="card" id="agenda">
-          <span className="number">05</span>
-          <h2>Agenda</h2>
-          <p>Débats, interviews, meetings et principaux rendez-vous politiques.</p>
-        </article>
-      </section>
+      <CampaignFeed />
 
       <footer className="container footer">
         <p>Projet 2027 — première version</p>

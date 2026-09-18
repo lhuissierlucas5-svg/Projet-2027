@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import { supabase } from "../../lib/supabase";
 
 type Process = {
@@ -75,6 +76,7 @@ function pollValue(poll: PollIndicator) {
 }
 
 export default async function PrimairesPage() {
+  await connection();
   const [processesQuery, candidatesQuery, pollsQuery] = await Promise.all([
     supabase
       .from("selection_processes")

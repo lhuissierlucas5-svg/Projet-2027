@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import { notFound } from "next/navigation";
 import { supabase } from "../../../lib/supabase";
 
@@ -26,6 +27,7 @@ export default async function CandidatePage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
+  await connection();
   const { slug } = await params;
 
   const { data: candidate } = await supabase

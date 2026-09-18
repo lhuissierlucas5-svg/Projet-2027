@@ -628,3 +628,14 @@ h1 {
   .process-card { padding: 20px; }
   .primary-candidate-card { align-items: flex-start; }
 }
+
+.campaign-section { padding-top: 48px; padding-bottom: 24px; scroll-margin-top: 24px; }
+.campaign-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 24px; }
+.campaign-card { min-width: 0; overflow-wrap: anywhere; }
+.campaign-card h3 { margin: 16px 0; font-size: 1.3rem; }
+.campaign-card p { line-height: 1.6; }
+.campaign-source { display: grid; gap: 8px; margin-top: 24px; }
+.poll-value { font-size: 2rem; font-weight: 700; }
+.poll-method { font-size: .9rem; line-height: 1.5; }
+.poll-method dt { font-weight: 600; margin-top: 8px; }
+.poll-method dd { margin: 0; }
