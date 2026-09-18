@@ -23,10 +23,12 @@ type SelectionCandidate = {
   positioning_label: string | null;
   positioning_summary: string | null;
   positioning_source_url: string | null;
-  candidature_status: string;
+  candidature_status: "confirmed" | "withdrawn" | "winner" | "eliminated";
   result_percent: number | null;
   result_note: string | null;
   sort_order: number;
+  image_url: string | null;
+  image_credit: string | null;
 };
 
 type PollIndicator = {
@@ -48,9 +50,11 @@ type PollIndicator = {
   published_at: string | null;
 };
 
-function formatDate(value: string | null) {
+function formatDate(value: string | null, short = false) {
   if (!value) return null;
-  return new Date(`${value}T12:00:00`).toLocaleDateString("fr-FR");
+  return new Date(`${value}T12:00:00`).toLocaleDateString("fr-FR", short
+    ? { day: "numeric", month: "short" }
+    : { day: "numeric", month: "long", year: "numeric" });
 }
 
 function statusLabel(status: Process["status"]) {
@@ -66,17 +70,43 @@ function processTypeLabel(type: Process["process_type"]) {
   return "Consultation";
 }
 
+function candidatureLabel(status: SelectionCandidate["candidature_status"]) {
+  if (status === "winner") return "Désigné";
+  if (status === "eliminated") return "Non désigné";
+  if (status === "withdrawn") return "Retiré";
+  return "En lice";
+}
+
+function processTheme(slug: string) {
+  if (slug === "choisir-2027") return "process-lilac";
+  if (slug === "ecologistes-2025") return "process-mint";
+  if (slug === "lr-2026") return "process-blue";
+  return "process-neutral";
+}
+
+function processShortName(process: Process) {
+  if (process.slug === "choisir-2027") return "Choisir 2027";
+  if (process.slug === "ecologistes-2025") return "Les Écologistes";
+  if (process.slug === "lr-2026") return "Les Républicains";
+  return process.name;
+}
+
 function pollValue(poll: PollIndicator) {
   if (poll.value_min !== null && poll.value_max !== null) {
-    if (poll.value_min === poll.value_max) return `${poll.value_min.toLocaleString("fr-FR")}%`;
+    if (poll.value_min === poll.value_max) {
+      return `${poll.value_min.toLocaleString("fr-FR")}%`;
+    }
     return `${poll.value_min.toLocaleString("fr-FR")}–${poll.value_max.toLocaleString("fr-FR")}%`;
   }
-  if (poll.value_percent !== null) return `${poll.value_percent.toLocaleString("fr-FR")}%`;
+  if (poll.value_percent !== null) {
+    return `${poll.value_percent.toLocaleString("fr-FR")}%`;
+  }
   return "—";
 }
 
 export default async function PrimairesPage() {
   await connection();
+
   const [processesQuery, candidatesQuery, pollsQuery] = await Promise.all([
     supabase
       .from("selection_processes")
@@ -101,82 +131,167 @@ export default async function PrimairesPage() {
     const dateB = b.first_round_date ?? b.result_date ?? "1900-01-01";
     return dateB.localeCompare(dateA);
   });
+
   const candidates = (candidatesQuery.data ?? []) as SelectionCandidate[];
   const polls = (pollsQuery.data ?? []) as PollIndicator[];
+  const nextProcess = processes.find(
+    (process) => process.status === "ongoing" || process.status === "upcoming"
+  );
 
   return (
-    <main className="page">
+    <main className="page primary-page">
+      <a className="skip-link" href="#processus">Aller aux processus</a>
+
       <header className="header">
         <div className="container nav">
-          <a className="brand" href="/">Élections 2027</a>
-          <nav>
+          <a className="brand" href="/">
+            Élections <span>2027</span>
+            <span className="brand-dot" aria-hidden="true" />
+          </a>
+          <nav aria-label="Navigation principale">
             <a href="/#candidats">Candidats</a>
-            <a href="/primaires">Primaires</a>
+            <a href="/primaires" className="nav-current">Primaires</a>
             <a href="/#propositions">Propositions</a>
             <a href="/#sondages">Sondages</a>
-            <a href="/#agenda">Agenda</a>
+            <a href="/#agenda" className="nav-agenda">Agenda ↗</a>
           </nav>
         </div>
       </header>
 
-      <section className="container primary-page-hero">
-        <p className="eyebrow">PRIMAIRES · DÉSIGNATIONS · SOURCES</p>
-        <h1 className="profile-title">Qui sera désigné ?</h1>
-        <p className="lead">
-          Les candidats, les dates clés et les résultats officiels.
-        </p>
+      <section className="primary-hero">
+        <div className="container primary-hero-grid">
+          <div>
+            <p className="hero-badge">
+              <span aria-hidden="true">✦</span> PRIMAIRES & DÉSIGNATIONS
+            </p>
+            <h1>Comment les candidats sont-ils désignés ?</h1>
+            <p className="lead">
+              Les processus officiels, les personnes en lice, les dates et les
+              résultats — avec les sources pour vérifier.
+            </p>
+          </div>
+
+          <div className="primary-overview" aria-label="Vue d’ensemble">
+            <div>
+              <strong>{processes.length}</strong>
+              <span>processus suivis</span>
+            </div>
+            <div>
+              <strong>{candidates.length}</strong>
+              <span>candidatures recensées</span>
+            </div>
+            <div className="overview-next">
+              <span>Prochaine échéance</span>
+              <strong>
+                {nextProcess?.first_round_date
+                  ? formatDate(nextProcess.first_round_date, true)
+                  : "À confirmer"}
+              </strong>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <section className="container methodology-note">
-        <strong>Lecture des sondages.</strong>
-        <p>
-          Un indicateur national mesure la présidentielle, pas les chances de gagner une primaire.
-        </p>
+      <div className="container primary-jump-nav" aria-label="Accès rapide aux processus">
+        {processes.map((process) => (
+          <a href={`#${process.slug}`} key={process.id}>
+            <span className={`jump-dot ${processTheme(process.slug)}`} aria-hidden="true" />
+            <span>
+              <strong>{processShortName(process)}</strong>
+              <small>{statusLabel(process.status)}</small>
+            </span>
+          </a>
+        ))}
+      </div>
+
+      <section className="container poll-explainer">
+        <span className="explainer-icon" aria-hidden="true">i</span>
+        <div>
+          <strong>Bien lire les chiffres</strong>
+          <p>
+            Un sondage présidentiel national n’est pas une probabilité de gagner une primaire.
+            Quand aucun sondage du corps électoral de la primaire n’est disponible, la page le dit explicitement.
+          </p>
+        </div>
       </section>
 
-      <section className="container process-list">
-        {processes.map((process) => {
+      <section className="container process-list primary-process-list" id="processus">
+        {processes.map((process, processIndex) => {
           const processCandidates = candidates.filter(
             (candidate) => candidate.process_id === process.id
           );
+          const theme = processTheme(process.slug);
 
           return (
-            <article className="process-card" key={process.id}>
-              <div className="process-heading">
-                <div>
+            <article
+              className={`process-card primary-process-card ${theme}`}
+              key={process.id}
+              id={process.slug}
+            >
+              <div className="process-accent" aria-hidden="true" />
+
+              <div className="process-heading primary-process-heading">
+                <div className="process-index" aria-hidden="true">
+                  {String(processIndex + 1).padStart(2, "0")}
+                </div>
+
+                <div className="process-title-block">
                   <div className="process-badges">
-                    <span className="tag">{processTypeLabel(process.process_type)}</span>
-                    <span className="tag subtle">{statusLabel(process.status)}</span>
+                    <span className="tag process-tag">
+                      {processTypeLabel(process.process_type)}
+                    </span>
+                    <span className="tag subtle">
+                      {statusLabel(process.status)}
+                    </span>
                   </div>
                   <h2>{process.name}</h2>
                   <p className="process-organizers">{process.organizers.join(" · ")}</p>
                 </div>
 
                 <a
-                  className="button secondary"
+                  className="button secondary process-source-button"
                   href={process.official_url}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                 >
-                  Source officielle
+                  Source officielle ↗
                 </a>
               </div>
 
-              {process.summary && <p className="process-summary">{process.summary}</p>}
+              <div className="process-info-grid">
+                <div className="process-timeline" aria-label="Dates clés">
+                  {process.first_round_date && (
+                    <div>
+                      <span>1er tour</span>
+                      <strong>{formatDate(process.first_round_date, true)}</strong>
+                    </div>
+                  )}
+                  {process.second_round_date && (
+                    <div>
+                      <span>2d tour</span>
+                      <strong>{formatDate(process.second_round_date, true)}</strong>
+                    </div>
+                  )}
+                  {process.result_date && (
+                    <div>
+                      <span>Résultat</span>
+                      <strong>{formatDate(process.result_date, true)}</strong>
+                    </div>
+                  )}
+                </div>
 
-              <div className="process-dates">
-                {process.first_round_date && (
-                  <span>Début / 1er tour : {formatDate(process.first_round_date)}</span>
-                )}
-                {process.second_round_date && (
-                  <span>2d tour : {formatDate(process.second_round_date)}</span>
-                )}
-                {process.result_date && (
-                  <span>Résultat : {formatDate(process.result_date)}</span>
+                {process.summary && (
+                  <details className="process-rules">
+                    <summary>
+                      Comment fonctionne ce processus ?
+                      <span aria-hidden="true">＋</span>
+                    </summary>
+                    <p>{process.summary}</p>
+                  </details>
                 )}
               </div>
 
-              <div className="primary-candidate-grid">
+              <div className="primary-candidate-grid primary-candidate-grid-v2">
                 {processCandidates.map((candidate) => {
                   const poll = polls.find(
                     (item) =>
@@ -185,92 +300,117 @@ export default async function PrimairesPage() {
                   );
 
                   return (
-                    <div className="primary-candidate-card" key={candidate.id}>
-                      <div className="candidate-initial">
-                        {candidate.display_name
-                          .split(" ")
-                          .map((part) => part.charAt(0))
-                          .join("")
-                          .slice(0, 2)}
-                      </div>
-
-                      <div className="primary-candidate-main">
-                        <p className="candidate-party">{candidate.party}</p>
-                        <h3>{candidate.display_name}</h3>
-
-                        {candidate.positioning_label && (
-                          <p className="position-label">{candidate.positioning_label}</p>
-                        )}
-
-                        {candidate.positioning_summary && (
-                          <details className="method-details"><summary>Son positionnement <span aria-hidden="true">＋</span></summary><p className="position-summary">{candidate.positioning_summary}</p></details>
-                        )}
-
-                        <div className="candidate-data-box">
-                          {candidate.result_percent !== null ? (
-                            <>
-                              <span className="data-label">Résultat officiel</span>
-                              <strong>
-                                {candidate.result_percent.toLocaleString("fr-FR")}%
-                              </strong>
-                              {candidate.result_note && <small>{candidate.result_note}</small>}
-                            </>
-                          ) : candidate.candidature_status === "winner" && candidate.result_note ? (
-                            <>
-                              <span className="data-label">Désignation officielle</span>
-                              <strong>Candidat désigné</strong>
-                              <small>{candidate.result_note}</small>
-                            </>
-                          ) : poll ? (
-                            <>
-                              <span className="data-label">
-                                Indicateur national — présidentielle
-                              </span>
-                              <strong>{pollValue(poll)}</strong>
-                              <small>
-                                {poll.institute}
-                                {poll.fieldwork_start && poll.fieldwork_end
-                                  ? ` · terrain du ${formatDate(poll.fieldwork_start)} au ${formatDate(
-                                      poll.fieldwork_end
-                                    )}`
-                                  : ""}
-                                {poll.sample_size
-                                  ? ` · ${poll.sample_size.toLocaleString("fr-FR")} personnes`
-                                  : ""}
-                              </small>
-                              {poll.note && <small>{poll.note}</small>}
-                              <a
-                                href={poll.source_url}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="source-link"
-                              >
-                                Voir le sondage
-                              </a>
-                            </>
+                    <article className="primary-candidate-card primary-candidate-card-v2" key={candidate.id}>
+                      <div className="primary-candidate-head">
+                        <div className="primary-avatar-wrap">
+                          {candidate.image_url ? (
+                            <img
+                              src={candidate.image_url}
+                              alt={candidate.display_name}
+                              className="primary-avatar"
+                              loading="lazy"
+                              width="76"
+                              height="76"
+                            />
                           ) : (
-                            <>
-                              <span className="data-label">Sondage comparable</span>
-                              <strong>Non disponible</strong>
-                              <small>
-                                Pas de donnée comparable publiée ici.
-                              </small>
-                            </>
+                            <div className="primary-avatar primary-avatar-fallback" aria-hidden="true">
+                              {candidate.display_name
+                                .split(" ")
+                                .map((part) => part.charAt(0))
+                                .join("")
+                                .slice(0, 2)}
+                            </div>
                           )}
+                          <span className="avatar-status" aria-hidden="true" />
                         </div>
 
-                        {candidate.positioning_source_url && (
-                          <a
-                            href={candidate.positioning_source_url}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="source-link"
-                          >
-                            Source du positionnement
-                          </a>
+                        <div className="primary-candidate-identity">
+                          <p className="candidate-party">{candidate.party ?? "Candidature"}</p>
+                          <h3>{candidate.display_name}</h3>
+                          <span className={`candidate-status candidate-status-${candidate.candidature_status}`}>
+                            {candidatureLabel(candidate.candidature_status)}
+                          </span>
+                        </div>
+                      </div>
+
+                      {candidate.positioning_label && (
+                        <p className="position-label position-pill">
+                          {candidate.positioning_label}
+                        </p>
+                      )}
+
+                      <div className="candidate-data-box candidate-data-box-v2">
+                        {candidate.result_percent !== null ? (
+                          <>
+                            <span className="data-label">Résultat officiel</span>
+                            <strong>{candidate.result_percent.toLocaleString("fr-FR")}%</strong>
+                            {candidate.result_note && <small>{candidate.result_note}</small>}
+                          </>
+                        ) : candidate.candidature_status === "winner" && candidate.result_note ? (
+                          <>
+                            <span className="data-label">Désignation officielle</span>
+                            <strong>Candidat désigné</strong>
+                            <small>{candidate.result_note}</small>
+                          </>
+                        ) : poll ? (
+                          <>
+                            <span className="data-label">Indicateur national — présidentielle</span>
+                            <strong>{pollValue(poll)}</strong>
+                            <span className="metric-warning">≠ sondage de primaire</span>
+                            <small>
+                              {poll.institute}
+                              {poll.fieldwork_start && poll.fieldwork_end
+                                ? ` · ${formatDate(poll.fieldwork_start, true)}–${formatDate(
+                                    poll.fieldwork_end,
+                                    true
+                                  )}`
+                                : ""}
+                              {poll.sample_size
+                                ? ` · ${poll.sample_size.toLocaleString("fr-FR")} personnes`
+                                : ""}
+                            </small>
+                            <a
+                              href={poll.source_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="source-link"
+                            >
+                              Méthode & source ↗
+                            </a>
+                          </>
+                        ) : (
+                          <>
+                            <span className="data-label">Sondage comparable</span>
+                            <strong className="data-empty">Non disponible</strong>
+                            <small>Aucune donnée comparable publiée ici.</small>
+                          </>
                         )}
                       </div>
-                    </div>
+
+                      {candidate.positioning_summary && (
+                        <details className="method-details position-details">
+                          <summary>
+                            Voir le positionnement
+                            <span aria-hidden="true">＋</span>
+                          </summary>
+                          <p>{candidate.positioning_summary}</p>
+                          {candidate.positioning_source_url && (
+                            <a
+                              href={candidate.positioning_source_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="source-link"
+                            >
+                              Source du positionnement ↗
+                            </a>
+                          )}
+                        </details>
+                      )}
+
+                      {candidate.image_credit && (
+                        <p className="primary-photo-credit">Photo : {candidate.image_credit}</p>
+                      )}
+                    </article>
                   );
                 })}
               </div>
@@ -279,18 +419,19 @@ export default async function PrimairesPage() {
         })}
       </section>
 
-      <section className="container methodology-note secondary-note">
-        <strong>Ce qui n’apparaît pas comme « officiel ».</strong>
+      <section className="container methodology-note secondary-note primary-footnote">
+        <strong>Notre règle d’affichage</strong>
         <p>
-          Une primaire seulement proposée dans les médias ou réclamée par une
-          personnalité n’est ajoutée à cette liste qu’une fois ses organisateurs, ses
-          règles ou son calendrier formellement actés.
+          Un processus n’est présenté comme officiel que lorsque ses organisateurs,
+          ses règles ou son calendrier sont formellement actés. Les données de sondage
+          restent associées à leur institut, leur période de terrain et leur population.
         </p>
       </section>
 
       <footer className="container footer">
-        <p>Élections 2027 — primaires et désignations sourcées</p>
-        <p>Pas de probabilité fabriquée : données publiées, dates et méthode.</p>
+        <a className="brand" href="/">Élections <span>2027</span></a>
+        <p>Des processus politiques expliqués simplement, avec leurs sources.</p>
+        <a href="#processus">Retour en haut ↑</a>
       </footer>
     </main>
   );
