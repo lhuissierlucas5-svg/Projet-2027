@@ -13,13 +13,36 @@ type Candidate = {
   quote_source_url: string | null;
 };
 
+type PrimaryPreview = {
+  name: string;
+  first_round_date: string | null;
+  second_round_date: string | null;
+  summary: string | null;
+};
+
+function formatDate(value: string | null) {
+  if (!value) return null;
+  return new Date(`${value}T12:00:00`).toLocaleDateString("fr-FR");
+}
+
 export default async function Home() {
-  const { data: candidates, error } = await supabase
-    .from("candidates")
-    .select(
-      "id, display_name, slug, party, image_url, image_credit, latest_quote, quote_date, quote_source_name, quote_source_url"
-    )
-    .order("display_name");
+  const [candidatesQuery, primaryQuery] = await Promise.all([
+    supabase
+      .from("candidates")
+      .select(
+        "id, display_name, slug, party, image_url, image_credit, latest_quote, quote_date, quote_source_name, quote_source_url"
+      )
+      .order("display_name"),
+    supabase
+      .from("selection_processes")
+      .select("name, first_round_date, second_round_date, summary")
+      .eq("slug", "choisir-2027")
+      .maybeSingle(),
+  ]);
+
+  const candidates = candidatesQuery.data;
+  const error = candidatesQuery.error;
+  const primary = primaryQuery.data as PrimaryPreview | null;
 
   return (
     <main className="page">
@@ -28,6 +51,7 @@ export default async function Home() {
           <div className="brand">Projet 2027</div>
           <nav>
             <a href="#candidats">Candidats</a>
+            <a href="/primaires">Primaires</a>
             <a href="#propositions">Propositions</a>
             <a href="#sondages">Sondages</a>
             <a href="#agenda">Agenda</a>
@@ -40,12 +64,12 @@ export default async function Home() {
           <p className="eyebrow">POLITIQUE FRANÇAISE · SOURCES · HISTORIQUE</p>
           <h1>Comprendre la politique française, dans le temps.</h1>
           <p className="lead">
-            Déclarations, propositions, sondages et événements, avec leurs
-            dates et leurs sources.
+            Déclarations, propositions, primaires, sondages et événements, avec
+            leurs dates et leurs sources.
           </p>
           <div className="actions">
             <a className="button primary" href="#candidats">Explorer les candidats</a>
-            <a className="button secondary" href="#propositions">Voir les propositions</a>
+            <a className="button secondary" href="/primaires">Suivre les primaires</a>
           </div>
         </div>
       </section>
@@ -123,19 +147,62 @@ export default async function Home() {
         )}
       </section>
 
+      <section className="container primaries-preview" id="primaires">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">02 · PRIMAIRES</p>
+            <h2>Qui désigne qui ?</h2>
+          </div>
+          <p>
+            Primaires et désignations officiellement annoncées, candidats,
+            positionnements documentés et sondages avec leur méthode.
+          </p>
+        </div>
+
+        <article className="primary-feature-card">
+          <div>
+            <div className="process-badges">
+              <span className="tag">Primaire officielle</span>
+              <span className="tag subtle">À venir</span>
+            </div>
+            <h3>{primary?.name ?? "Choisir 2027"}</h3>
+            <p>
+              {primary?.summary ??
+                "Primaire de la gauche socialiste et démocratique organisée à l’automne 2026."}
+            </p>
+            <div className="process-dates">
+              {primary?.first_round_date && (
+                <span>1er tour : {formatDate(primary.first_round_date)}</span>
+              )}
+              {primary?.second_round_date && (
+                <span>2d tour : {formatDate(primary.second_round_date)}</span>
+              )}
+            </div>
+          </div>
+          <div className="preview-action">
+            <a className="button primary" href="/primaires">
+              Voir les candidats et les données →
+            </a>
+            <small>
+              Les intentions de vote nationales sont distinguées des sondages de primaire.
+            </small>
+          </div>
+        </article>
+      </section>
+
       <section className="container grid" id="propositions">
         <article className="card">
-          <span className="number">02</span>
+          <span className="number">03</span>
           <h2>Propositions</h2>
           <p>Les propositions classées par thème, date et source originale.</p>
         </article>
         <article className="card" id="sondages">
-          <span className="number">03</span>
+          <span className="number">04</span>
           <h2>Sondages</h2>
           <p>Les résultats et leur méthodologie, conservés pour suivre leur évolution.</p>
         </article>
         <article className="card" id="agenda">
-          <span className="number">04</span>
+          <span className="number">05</span>
           <h2>Agenda</h2>
           <p>Débats, interviews, meetings et principaux rendez-vous politiques.</p>
         </article>
