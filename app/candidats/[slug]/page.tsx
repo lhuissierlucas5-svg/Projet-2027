@@ -97,8 +97,7 @@ export default async function CandidatePage({
             <h2>Historique sourcé</h2>
           </div>
           <p>
-            Les déclarations sont conservées avec leur date et leur source afin de
-            pouvoir suivre leur évolution dans le temps.
+            Ses déclarations, avec leur date et leur source.
           </p>
         </div>
 

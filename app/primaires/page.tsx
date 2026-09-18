@@ -121,22 +121,16 @@ export default async function PrimairesPage() {
 
       <section className="container primary-page-hero">
         <p className="eyebrow">PRIMAIRES · DÉSIGNATIONS · SOURCES</p>
-        <h1 className="profile-title">Les processus de désignation pour 2027</h1>
+        <h1 className="profile-title">Qui sera désigné ?</h1>
         <p className="lead">
-          Les primaires et désignations officiellement annoncées, avec leurs règles,
-          leurs candidats, leurs lignes politiques documentées et les données de
-          sondage réellement disponibles.
+          Les candidats, les dates clés et les résultats officiels.
         </p>
       </section>
 
       <section className="container methodology-note">
         <strong>Lecture des sondages.</strong>
         <p>
-          À ce jour, aucun sondage récent identifié ici ne mesure directement le vote
-          du corps électoral de la primaire « Choisir 2027 ». Les chiffres affichés
-          comme « indicateur national » sont des intentions de vote au premier tour de
-          la présidentielle lorsque le candidat est testé. Ils ne constituent pas une
-          probabilité de remporter la primaire.
+          Un indicateur national mesure la présidentielle, pas les chances de gagner une primaire.
         </p>
       </section>
 
@@ -209,7 +203,7 @@ export default async function PrimairesPage() {
                         )}
 
                         {candidate.positioning_summary && (
-                          <p className="position-summary">{candidate.positioning_summary}</p>
+                          <details className="method-details"><summary>Son positionnement <span aria-hidden="true">＋</span></summary><p className="position-summary">{candidate.positioning_summary}</p></details>
                         )}
 
                         <div className="candidate-data-box">
@@ -257,9 +251,9 @@ export default async function PrimairesPage() {
                           ) : (
                             <>
                               <span className="data-label">Sondage comparable</span>
-                              <strong>Non publié dans l’enquête affichée</strong>
+                              <strong>Non disponible</strong>
                               <small>
-                                Aucun chiffre n’est inventé pour compléter les cases.
+                                Pas de donnée comparable publiée ici.
                               </small>
                             </>
                           )}
