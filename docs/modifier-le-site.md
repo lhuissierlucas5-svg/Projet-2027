@@ -130,3 +130,7 @@ Dans le Table Editor Supabase, modifier les tables d'origine, pas les vues `curr
 Renseigner `archived_at` pour retirer une ligne du site en conservant son historique ; remettre à null pour la rétablir si elle est encore valide. `expires_at` définit une fin de validité automatique.
 Dans `political_agenda`, `sort_date` est le début et `end_date` la dernière journée. Pour une heure exacte, utiliser `starts_at` et `ends_at` avec un fuseau. `completed` et `cancelled` retirent immédiatement l'événement. Sans heure connue, le retrait a lieu à minuit de Paris après la dernière journée. Le site ouvert s'actualise sous une minute.
 Les sondages de plus de 90 jours restent en base mais quittent les pages courantes. Leur ordre est premier tour, deuxième tour, puis autres thématiques.
+
+## Pointer une source vers la phrase précise
+
+Dans Supabase, renseigner `source_excerpt` avec quelques mots consécutifs copiés exactement dans le paragraphe source qui justifie l'information. Ne pas utiliser le résumé rédigé pour notre site. Le lien cible ce texte automatiquement. Laisser vide si le passage n'est pas vérifié ; les liens PDF gardent leur numéro de page. Vérifier à nouveau l'extrait après tout changement d'URL ou d'article.

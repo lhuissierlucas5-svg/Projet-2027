@@ -6,6 +6,7 @@ export type PollUpdate = {
   summary: string;
   source_name: string;
   source_url: string;
+  source_excerpt: string | null;
   published_at: string;
   verified_at: string;
   institute: string | null;

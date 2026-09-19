@@ -1,3 +1,4 @@
+import { sourceUrl, sourceLinkTitle } from "../../lib/source-url";
 import { connection } from "next/server";
 import { supabase } from "../../lib/supabase";
 import SiteNav from "../site-nav";
@@ -13,6 +14,7 @@ type Process = {
   second_round_date: string | null;
   result_date: string | null;
   official_url: string;
+  source_excerpt: string | null;
   summary: string | null;
 };
 
@@ -24,6 +26,7 @@ type SelectionCandidate = {
   positioning_label: string | null;
   positioning_summary: string | null;
   positioning_source_url: string | null;
+  source_excerpt: string | null;
   candidature_status: "confirmed" | "withdrawn" | "winner" | "eliminated";
   result_percent: number | null;
   result_note: string | null;
@@ -47,6 +50,7 @@ type PollIndicator = {
   sample_size: number | null;
   population: string | null;
   source_url: string;
+  source_excerpt: string | null;
   note: string | null;
   published_at: string | null;
 };
@@ -237,7 +241,7 @@ export default async function PrimairesPage() {
 
                 <a
                   className="button secondary process-source-button"
-                  href={process.official_url}
+                  href={sourceUrl(process.official_url, process.source_excerpt)} title={sourceLinkTitle(process.source_excerpt)}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -357,7 +361,7 @@ export default async function PrimairesPage() {
                                 : ""}
                             </small>
                             <a
-                              href={poll.source_url}
+                              href={sourceUrl(poll.source_url, poll.source_excerpt)} title={sourceLinkTitle(poll.source_excerpt)}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="source-link"
@@ -383,7 +387,7 @@ export default async function PrimairesPage() {
                           <p>{candidate.positioning_summary}</p>
                           {candidate.positioning_source_url && (
                             <a
-                              href={candidate.positioning_source_url}
+                              href={sourceUrl(candidate.positioning_source_url, candidate.source_excerpt)} title={sourceLinkTitle(candidate.source_excerpt)}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="source-link"

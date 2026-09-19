@@ -1,3 +1,4 @@
+import { sourceUrl, sourceLinkTitle } from "../lib/source-url";
 import { type PollUpdate, loadCurrentPolls, groupPolls, comparePollGroups, pollStage, stageLabels } from "../lib/polls";
 import { supabase } from "../lib/supabase";
 
@@ -19,6 +20,7 @@ type Position = {
   position_date: string;
   source_name: string;
   source_url: string;
+  source_excerpt: string | null;
   highlight_value: string | null;
   highlight_label: string | null;
 };
@@ -36,6 +38,7 @@ type AgendaItem = {
   summary: string;
   source_name: string;
   source_url: string;
+  source_excerpt: string | null;
   highlight: boolean;
   image_url: string | null;
   image_credit: string | null;
@@ -56,6 +59,7 @@ type Contender = {
   note: string;
   source_name: string;
   source_url: string;
+  source_excerpt: string | null;
   as_of_date: string;
   sort_order: number;
   image_url: string | null;
@@ -100,14 +104,6 @@ function date(value: string | null) {
     });
 }
 
-function sourceUrl(value: string) {
-  try {
-    const url = new URL(value);
-    return url.protocol === "https:" ? url.href : undefined;
-  } catch {
-    return undefined;
-  }
-}
 
 function initials(name: string) {
   return name
@@ -130,14 +126,14 @@ export default async function CampaignFeed() {
       supabase
         .from("current_candidate_positions")
         .select(
-          "id,candidate_id,topic,title,summary,position_date,source_name,source_url,highlight_value,highlight_label"
+          "id,candidate_id,topic,title,summary,position_date,source_name,source_url,source_excerpt,highlight_value,highlight_label"
         )
         .eq("verification_status", "verified")
         .order("position_date", { ascending: false }),
       supabase
         .from("current_political_agenda")
         .select(
-          "id,slug,sort_date,date_label,title,category,status,location,organizer,summary,source_name,source_url,highlight,image_url,image_credit"
+          "id,slug,sort_date,date_label,title,category,status,location,organizer,summary,source_name,source_url,source_excerpt,highlight,image_url,image_credit"
         )
 
         .order("sort_date", { ascending: true })
@@ -145,7 +141,7 @@ export default async function CampaignFeed() {
       supabase
         .from("current_contender_watch")
         .select(
-          "id,display_name,party,status,status_label,note,source_name,source_url,as_of_date,sort_order,image_url,image_credit"
+          "id,display_name,party,status,status_label,note,source_name,source_url,source_excerpt,as_of_date,sort_order,image_url,image_credit"
         )
         .order("sort_order", { ascending: true }),
       supabase
@@ -254,7 +250,7 @@ export default async function CampaignFeed() {
                       {date(position.position_date)}
                     </time>
                     <a
-                      href={sourceUrl(position.source_url)}
+                      href={sourceUrl(position.source_url, position.source_excerpt)} title={sourceLinkTitle(position.source_excerpt)}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -329,7 +325,7 @@ export default async function CampaignFeed() {
                   <div className="agenda-meta-v2">
                     {item.location && <span>{item.location}</span>}
                     <a
-                      href={sourceUrl(item.source_url)}
+                      href={sourceUrl(item.source_url, item.source_excerpt)} title={sourceLinkTitle(item.source_excerpt)}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -384,7 +380,7 @@ export default async function CampaignFeed() {
                 <div className="contender-footer">
                   <time dateTime={person.as_of_date}>Mis à jour {date(person.as_of_date)}</time>
                   <a
-                    href={sourceUrl(person.source_url)}
+                    href={sourceUrl(person.source_url, person.source_excerpt)} title={sourceLinkTitle(person.source_excerpt)}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -505,7 +501,7 @@ export default async function CampaignFeed() {
                   <p>{first.summary}</p>
                   <a
                     className="source-link"
-                    href={sourceUrl(first.source_url)}
+                    href={sourceUrl(first.source_url, first.source_excerpt)} title={sourceLinkTitle(first.source_excerpt)}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

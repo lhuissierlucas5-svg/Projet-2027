@@ -1,3 +1,4 @@
+import { sourceUrl, sourceLinkTitle } from "../../lib/source-url";
 import { connection } from "next/server";
 import { supabase } from "../../lib/supabase";
 import SiteNav from "../site-nav";
@@ -10,6 +11,7 @@ type Issue = {
   description: string;
   source_name: string;
   source_url: string;
+  source_excerpt: string | null;
   source_date: string;
   sort_order: number;
   accent: string;
@@ -36,6 +38,7 @@ type IssueCard = {
   key_label: string | null;
   source_name: string;
   source_url: string;
+  source_excerpt: string | null;
   source_date: string;
   coverage_status: "documented" | "partial" | "awaiting";
 };
@@ -106,7 +109,7 @@ export default async function ComparePage() {
               Part des répondants citant ce sujet parmi les priorités d’action pour les prochains mois.
             </p>
             {issues[0] && (
-              <a href={issues[0].source_url} target="_blank" rel="noopener noreferrer">
+              <a href={sourceUrl(issues[0].source_url, issues[0].source_excerpt)} title={sourceLinkTitle(issues[0].source_excerpt)} target="_blank" rel="noopener noreferrer">
                 Source · {issues[0].source_name} ↗
               </a>
             )}
@@ -156,7 +159,7 @@ export default async function ComparePage() {
                 <div className="compare-priority-score">
                   <strong>{Number(issue.priority_percent).toLocaleString("fr-FR")} %</strong>
                   <span>des Français</span>
-                  <a href={issue.source_url} target="_blank" rel="noopener noreferrer">
+                  <a href={sourceUrl(issue.source_url, issue.source_excerpt)} title={sourceLinkTitle(issue.source_excerpt)} target="_blank" rel="noopener noreferrer">
                     {issue.source_name} · {formatDate(issue.source_date)} ↗
                   </a>
                 </div>
@@ -224,7 +227,7 @@ export default async function ComparePage() {
 
                       <div className="compare-card-footer">
                         <time dateTime={card.source_date}>{formatDate(card.source_date)}</time>
-                        <a href={card.source_url} target="_blank" rel="noopener noreferrer">
+                        <a href={sourceUrl(card.source_url, card.source_excerpt)} title={sourceLinkTitle(card.source_excerpt)} target="_blank" rel="noopener noreferrer">
                           {card.source_name} ↗
                         </a>
                       </div>

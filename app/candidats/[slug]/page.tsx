@@ -1,3 +1,4 @@
+import { sourceUrl, sourceLinkTitle } from "../../../lib/source-url";
 import { connection } from "next/server";
 import { notFound } from "next/navigation";
 import { supabase } from "../../../lib/supabase";
@@ -20,6 +21,7 @@ type Position = {
   position_date: string;
   source_name: string;
   source_url: string;
+  source_excerpt: string | null;
   featured: boolean;
 };
 
@@ -89,7 +91,7 @@ export default async function CandidatePage({
 
   const { data: positionsQuery } = await supabase
     .from("current_candidate_positions")
-    .select("id, topic, title, summary, position_date, source_name, source_url, featured")
+    .select("id, topic, title, summary, position_date, source_name, source_url,source_excerpt, featured")
     .eq("candidate_id", candidate.id)
     .eq("verification_status", "verified")
     .order("position_date", { ascending: false });
@@ -187,7 +189,7 @@ export default async function CandidatePage({
                   <div className="position-source-row">
                     <time dateTime={position.position_date}>{formatDate(position.position_date)}</time>
                     <a
-                      href={position.source_url}
+                      href={sourceUrl(position.source_url, position.source_excerpt)} title={sourceLinkTitle(position.source_excerpt)}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -244,7 +246,7 @@ export default async function CandidatePage({
                           <h4>{position.title}</h4>
                           <p>{position.summary}</p>
                           <a
-                            href={position.source_url}
+                            href={sourceUrl(position.source_url, position.source_excerpt)} title={sourceLinkTitle(position.source_excerpt)}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="source-link"

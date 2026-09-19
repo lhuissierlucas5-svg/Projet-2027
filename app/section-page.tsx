@@ -1,3 +1,4 @@
+import { sourceUrl, sourceLinkTitle } from "../lib/source-url";
 import { type PollUpdate, loadCurrentPolls, groupPolls, comparePollGroups, pollStage, stageLabels } from "../lib/polls";
 import { connection } from "next/server";
 import { supabase } from "../lib/supabase";
@@ -23,6 +24,7 @@ type Position = {
   position_date: string;
   source_name: string;
   source_url: string;
+  source_excerpt: string | null;
   featured: boolean;
   highlight_value: string | null;
   highlight_label: string | null;
@@ -37,6 +39,7 @@ type Contender = {
   note: string;
   source_name: string;
   source_url: string;
+  source_excerpt: string | null;
   as_of_date: string;
   image_url: string | null;
   image_credit: string | null;
@@ -55,6 +58,7 @@ type AgendaItem = {
   summary: string;
   source_name: string;
   source_url: string;
+  source_excerpt: string | null;
   highlight: boolean;
   image_url: string | null;
   image_credit: string | null;
@@ -137,14 +141,6 @@ function date(value: string | null) {
   });
 }
 
-function sourceUrl(value: string) {
-  try {
-    const url = new URL(value);
-    return url.protocol === "https:" ? url.href : undefined;
-  } catch {
-    return undefined;
-  }
-}
 
 function initials(name: string) {
   return name
@@ -191,7 +187,7 @@ async function CandidatesContent() {
       .order("display_name"),
     supabase
       .from("current_candidate_positions")
-      .select("id,candidate_id,topic,title,summary,position_date,source_name,source_url,featured,highlight_value,highlight_label")
+      .select("id,candidate_id,topic,title,summary,position_date,source_name,source_url,source_excerpt,featured,highlight_value,highlight_label")
       .eq("verification_status", "verified")
       .eq("featured", true)
       .order("position_date", { ascending: false }),
@@ -272,7 +268,7 @@ async function ProposalsContent() {
   const [positionsQuery, candidatesQuery] = await Promise.all([
     supabase
       .from("current_candidate_positions")
-      .select("id,candidate_id,topic,title,summary,position_date,source_name,source_url,featured,highlight_value,highlight_label")
+      .select("id,candidate_id,topic,title,summary,position_date,source_name,source_url,source_excerpt,featured,highlight_value,highlight_label")
       .eq("verification_status", "verified")
       .order("position_date", { ascending: false }),
     supabase
@@ -333,7 +329,7 @@ async function ProposalsContent() {
                       <p>{position.summary}</p>
                       <div className="proposal-source">
                         <time>{date(position.position_date)}</time>
-                        <a href={sourceUrl(position.source_url)} target="_blank" rel="noopener noreferrer">
+                        <a href={sourceUrl(position.source_url, position.source_excerpt)} title={sourceLinkTitle(position.source_excerpt)} target="_blank" rel="noopener noreferrer">
                           {position.source_name} ↗
                         </a>
                       </div>
@@ -352,7 +348,7 @@ async function ProposalsContent() {
 async function ContendersContent() {
   const query = await supabase
     .from("current_contender_watch")
-    .select("id,display_name,party,status,status_label,note,source_name,source_url,as_of_date,image_url,image_credit")
+    .select("id,display_name,party,status,status_label,note,source_name,source_url,source_excerpt,as_of_date,image_url,image_credit")
     .order("sort_order", { ascending: true });
 
   const contenders = (query.data ?? []) as Contender[];
@@ -383,7 +379,7 @@ async function ContendersContent() {
             <p className="contender-note">{person.note}</p>
             <div className="contender-footer">
               <time>Mis à jour {date(person.as_of_date)}</time>
-              <a href={sourceUrl(person.source_url)} target="_blank" rel="noopener noreferrer">Source ↗</a>
+              <a href={sourceUrl(person.source_url, person.source_excerpt)} title={sourceLinkTitle(person.source_excerpt)} target="_blank" rel="noopener noreferrer">Source ↗</a>
             </div>
             <span className="contender-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
           </article>
@@ -398,7 +394,7 @@ async function AgendaContent() {
   const [agendaQuery, primaryQuery] = await Promise.all([
     supabase
       .from("current_political_agenda")
-      .select("id,slug,sort_date,date_label,title,category,status,location,organizer,summary,source_name,source_url,highlight,image_url,image_credit")
+      .select("id,slug,sort_date,date_label,title,category,status,location,organizer,summary,source_name,source_url,source_excerpt,highlight,image_url,image_credit")
 
       .order("sort_date", { ascending: true }),
     supabase
@@ -463,7 +459,7 @@ async function AgendaContent() {
               <p>{item.summary}</p>
               <div className="agenda-meta-v2">
                 {item.location && <span>{item.location}</span>}
-                <a href={sourceUrl(item.source_url)} target="_blank" rel="noopener noreferrer">
+                <a href={sourceUrl(item.source_url, item.source_excerpt)} title={sourceLinkTitle(item.source_excerpt)} target="_blank" rel="noopener noreferrer">
                   {item.source_name} ↗
                 </a>
               </div>
@@ -547,7 +543,7 @@ async function PollsContent() {
                   <dt>Terrain</dt><dd>Du {date(first.fieldwork_start)} au {date(first.fieldwork_end)}</dd>
                   <dt>Base</dt><dd>{first.sample_size?.toLocaleString("fr-FR")} personnes · {first.population}</dd>
                 </dl>
-                <a className="source-link" href={sourceUrl(first.source_url)} target="_blank" rel="noopener noreferrer">
+                <a className="source-link" href={sourceUrl(first.source_url, first.source_excerpt)} title={sourceLinkTitle(first.source_excerpt)} target="_blank" rel="noopener noreferrer">
                   Consulter {first.source_name} ↗
                 </a>
               </details>

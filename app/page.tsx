@@ -1,3 +1,4 @@
+import { sourceUrl, sourceLinkTitle } from "../lib/source-url";
 import CampaignFeed from "./campaign-feed";
 import SiteNav from "./site-nav";
 import { connection } from "next/server";
@@ -21,6 +22,7 @@ type Position = {
   position_date: string;
   source_name: string;
   source_url: string;
+  source_excerpt: string | null;
   highlight_value: string | null;
   highlight_label: string | null;
 };
@@ -62,7 +64,7 @@ export default async function Home() {
       .maybeSingle(),
     supabase
       .from("current_candidate_positions")
-      .select("id,candidate_id,topic,title,summary,position_date,source_name,source_url,highlight_value,highlight_label")
+      .select("id,candidate_id,topic,title,summary,position_date,source_name,source_url,source_excerpt,highlight_value,highlight_label")
       .eq("verification_status", "verified")
       .eq("featured", true)
       .order("position_date", { ascending: false }),
@@ -236,7 +238,7 @@ export default async function Home() {
                         )}
                         <h4>{position.title}</h4>
                         <a
-                          href={position.source_url}
+                          href={sourceUrl(position.source_url, position.source_excerpt)} title={sourceLinkTitle(position.source_excerpt)}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="source-link"

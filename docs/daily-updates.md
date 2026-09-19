@@ -21,3 +21,9 @@ Les vues `current_*` (migration `db/temporal_visibility.sql`) filtrent à chaque
 - Conserver l'historique en base, ne pas le supprimer physiquement. Une source inaccessible n'autorise pas à modifier les dates ou à inventer une actualisation.
 
 Les vues respectent les permissions RLS des tables (security_invoker). Aucun droit d'écriture public n'est ajouté. Tout changement de schéma nécessite une migration explicite, pas une initiative de la collecte.
+
+## Liens vers le passage précis
+
+Chaque table de contenu dispose de `source_excerpt` : court extrait exact vérifié dans la source, jamais notre résumé. Compléter aussi les anciennes lignes quand la source est accessible. Le site encode cet extrait en fragment textuel pour tenter de défiler et surligner le passage chez l'éditeur. Conserver l'URL canonique dans `source_url` pour la déduplication et les groupes de sondages. Si la source change, revérifier ou effacer l'extrait. Respecter les limites de citation cumulées par source.
+
+Sans extrait vérifié, le lien reste classique. Les PDF conservent leur page `#page=N`. L'accès payant, les modifications de l'article et les navigateurs/sites ne prenant pas en charge les fragments peuvent empêcher le surlignage. Ne pas annoncer une garantie universelle.

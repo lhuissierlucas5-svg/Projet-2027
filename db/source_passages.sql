@@ -1,0 +1,16 @@
+-- Exact short excerpts verified against the linked source; never summaries.
+alter table public.candidate_positions add column source_excerpt text check (source_excerpt is null or length(trim(source_excerpt)) between 3 and 300);
+alter table public.political_agenda add column source_excerpt text check (source_excerpt is null or length(trim(source_excerpt)) between 3 and 300);
+alter table public.contender_watch add column source_excerpt text check (source_excerpt is null or length(trim(source_excerpt)) between 3 and 300);
+alter table public.candidate_issue_cards add column source_excerpt text check (source_excerpt is null or length(trim(source_excerpt)) between 3 and 300);
+alter table public.priority_issues add column source_excerpt text check (source_excerpt is null or length(trim(source_excerpt)) between 3 and 300);
+alter table public.campaign_updates add column source_excerpt text check (source_excerpt is null or length(trim(source_excerpt)) between 3 and 300);
+alter table public.selection_candidates add column source_excerpt text check (source_excerpt is null or length(trim(source_excerpt)) between 3 and 300);
+alter table public.selection_processes add column source_excerpt text check (source_excerpt is null or length(trim(source_excerpt)) between 3 and 300);
+alter table public.selection_poll_indicators add column source_excerpt text check (source_excerpt is null or length(trim(source_excerpt)) between 3 and 300);
+create or replace view public.current_political_agenda with (security_invoker=true) as select * from public.political_agenda where archived_at is null and (expires_at is null or expires_at > now()) and status not in ('completed','cancelled') and coalesce(ends_at, starts_at, ((coalesce(end_date,sort_date) + 1)::timestamp at time zone 'Europe/Paris')) > now();
+create or replace view public.current_campaign_updates with (security_invoker=true) as select * from public.campaign_updates where archived_at is null and (expires_at is null or expires_at > now()) and verification_status = 'verified' and published_at <= (now() at time zone 'Europe/Paris')::date and (kind <> 'poll' or published_at >= (now() at time zone 'Europe/Paris')::date - 90) and (kind <> 'appearance' or (event_status = 'scheduled' and coalesce(event_at, ((event_date + 1)::timestamp at time zone 'Europe/Paris')) > now()));
+create or replace view public.current_candidate_positions with (security_invoker=true) as select * from public.candidate_positions where archived_at is null and (expires_at is null or expires_at > now()) and verification_status = 'verified';
+create or replace view public.current_contender_watch with (security_invoker=true) as select * from public.contender_watch where archived_at is null and (expires_at is null or expires_at > now());
+create or replace view public.current_candidate_issue_cards with (security_invoker=true) as select * from public.candidate_issue_cards where archived_at is null and (expires_at is null or expires_at > now()) and verification_status = 'verified';
+create or replace view public.current_priority_issues with (security_invoker=true) as select * from public.priority_issues where archived_at is null and (expires_at is null or expires_at > now());
