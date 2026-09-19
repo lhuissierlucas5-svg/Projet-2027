@@ -134,3 +134,24 @@ Les sondages de plus de 90 jours restent en base mais quittent les pages courant
 ## Pointer une source vers la phrase précise
 
 Dans Supabase, renseigner `source_excerpt` avec quelques mots consécutifs copiés exactement dans le paragraphe source qui justifie l'information. Ne pas utiliser le résumé rédigé pour notre site. Le lien cible ce texte automatiquement. Laisser vide si le passage n'est pas vérifié ; les liens PDF gardent leur numéro de page. Vérifier à nouveau l'extrait après tout changement d'URL ou d'article.
+
+## Administration du site
+
+Adresse : https://election-2027-candidats.vercel.app/admin
+
+Première configuration (propriétaire uniquement) :
+1. Dans Supabase → Authentication → Users, créer son compte e-mail/mot de passe et confirmer son adresse. Ne jamais communiquer son mot de passe dans une conversation.
+2. Copier son identifiant utilisateur, puis l'ajouter dans `public.site_admins.user_id` via le Table Editor. Seul le propriétaire du projet peut attribuer ce droit. Un compte ordinaire n'a aucun accès en écriture.
+3. Se connecter sur `/admin`. En cas de mot de passe oublié, le propriétaire gère le compte dans Supabase Authentication.
+
+Choisir une rubrique et un contenu. Modifier les champs, vérifier la source, puis **Enregistrer**. Une correction d'un contenu déjà public est publiée immédiatement ; le site ouvert se rafraîchit dans la minute. **Ajouter un brouillon** est disponible pour propositions et agenda. **Vérifier et publier** retire l'archivage et valide la publication ; les règles temporelles restent applicables. **Archiver** retire du site sans supprimer l'historique.
+
+Pour les sondages, seuls titres, résumés et sources sont éditables : la veille gère les chiffres et les scénarios complets. Les primaires et les thèmes prioritaires restent modifiables via Supabase. Les 500 contenus les plus récemment modifiés de chaque rubrique sont affichés.
+
+Si la source change, le passage précédent est effacé automatiquement lorsqu'il n'a pas été remplacé. Les modifications concurrentes d'un même contenu sont refusées : recharger avant de reprendre. L'éditeur n'est pas rafraîchi automatiquement pendant la saisie.
+
+## Suivi et contrôles
+
+`/suivi` affiche les exécutions réellement journalisées, sans inventer de réussite. Un traitement sans confirmation après deux heures, une exécution partielle/échouée ou une dernière réussite de plus de 36 heures sont signalés. Aucun historique antérieur n'est reconstitué artificiellement.
+
+Le workflow GitHub **Contrôle du site déployé** se déclenche après un statut Vercel réussi sur main. Il attend le SHA attendu sur `/api/health`, puis contrôle les pages sur ordinateur et mobile, le débordement horizontal, les erreurs JavaScript, les boutons Source et l'accès public à la seule connexion admin. En cas d'échec, les captures et traces restent sept jours dans les artefacts GitHub Actions. Les notifications utilisent les préférences GitHub du propriétaire ; aucun destinataire externe n'est ajouté. Il peut aussi être lancé manuellement dans Actions.

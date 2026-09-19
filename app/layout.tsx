@@ -12,7 +12,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="fr">
-      <body>{children}<LiveRefresh /></body>
+      <body>{children}<div className="management-links"><a href="/suivi">Suivi des actualisations</a><a href="/admin">Administration</a></div><LiveRefresh /></body>
     </html>
   );
 }
