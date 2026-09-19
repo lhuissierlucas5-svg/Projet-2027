@@ -3393,3 +3393,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   .contender-footer a { transition: none; }
 }
+/* Keep the brand intact when the larger navigation needs horizontal scrolling. */
+.site-nav-shell > .brand { flex-shrink: 0; }
+.site-nav-scroll { min-width: 0; }
