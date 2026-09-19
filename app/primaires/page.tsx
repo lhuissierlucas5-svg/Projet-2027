@@ -46,6 +46,7 @@ type ProcessWatch = {
   opponents_or_reservations: string[];
   source_name: string;
   source_url: string;
+  source_excerpt: string | null;
   as_of_date: string;
 };
 
@@ -470,7 +471,7 @@ export default async function PrimairesPage() {
                 <div className="process-watch-footer">
                   <time dateTime={watch.as_of_date}>État au {formatDate(watch.as_of_date)}</time>
                   <a
-                    href={sourceUrl(watch.source_url)}
+                    href={sourceUrl(watch.source_url, watch.source_excerpt)} title={sourceLinkTitle(watch.source_excerpt)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="source-link"
