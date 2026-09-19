@@ -35,6 +35,20 @@ type SelectionCandidate = {
   image_credit: string | null;
 };
 
+type ProcessWatch = {
+  id: string;
+  slug: string;
+  title: string;
+  status_label: string;
+  scope_label: string;
+  summary: string;
+  proponents: string[];
+  opponents_or_reservations: string[];
+  source_name: string;
+  source_url: string;
+  as_of_date: string;
+};
+
 type PollIndicator = {
   id: string;
   process_id: string;
@@ -112,7 +126,7 @@ function pollValue(poll: PollIndicator) {
 export default async function PrimairesPage() {
   await connection();
 
-  const [processesQuery, candidatesQuery, pollsQuery] = await Promise.all([
+  const [processesQuery, candidatesQuery, pollsQuery, processWatchQuery] = await Promise.all([
     supabase
       .from("selection_processes")
       .select("*")
@@ -125,6 +139,10 @@ export default async function PrimairesPage() {
       .from("selection_poll_indicators")
       .select("*")
       .order("published_at", { ascending: false }),
+    supabase
+      .from("selection_process_watch")
+      .select("*")
+      .order("as_of_date", { ascending: false }),
   ]);
 
   const processes = ((processesQuery.data ?? []) as Process[]).sort((a, b) => {
@@ -139,6 +157,7 @@ export default async function PrimairesPage() {
 
   const candidates = (candidatesQuery.data ?? []) as SelectionCandidate[];
   const polls = (pollsQuery.data ?? []) as PollIndicator[];
+  const processWatch = (processWatchQuery.data ?? []) as ProcessWatch[];
   const nextProcess = processes.find(
     (process) => process.status === "ongoing" || process.status === "upcoming"
   );
@@ -409,6 +428,61 @@ export default async function PrimairesPage() {
           );
         })}
       </section>
+
+      {processWatch.length > 0 && (
+        <section className="container process-watch-section" aria-labelledby="process-watch-title">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">À SURVEILLER</p>
+              <h2 id="process-watch-title">Processus envisagés, pas encore officiels<span className="accent-dot">.</span></h2>
+            </div>
+            <p>
+              Cette zone suit les discussions publiques sans présenter une hypothèse comme une primaire actée.
+            </p>
+          </div>
+
+          <div className="process-watch-grid">
+            {processWatch.map((watch) => (
+              <article className="process-watch-card" key={watch.id}>
+                <div className="process-watch-topline">
+                  <span className="tag process-watch-tag">{watch.status_label}</span>
+                  <span className="tag subtle">{watch.scope_label}</span>
+                </div>
+
+                <h3>{watch.title}</h3>
+                <p>{watch.summary}</p>
+
+                <div className="process-watch-columns">
+                  {watch.proponents.length > 0 && (
+                    <div>
+                      <span>Partisans / promoteurs</span>
+                      <strong>{watch.proponents.join(" · ")}</strong>
+                    </div>
+                  )}
+                  {watch.opponents_or_reservations.length > 0 && (
+                    <div>
+                      <span>Réserves documentées</span>
+                      <strong>{watch.opponents_or_reservations.join(" · ")}</strong>
+                    </div>
+                  )}
+                </div>
+
+                <div className="process-watch-footer">
+                  <time dateTime={watch.as_of_date}>État au {formatDate(watch.as_of_date)}</time>
+                  <a
+                    href={sourceUrl(watch.source_url)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="source-link"
+                  >
+                    {watch.source_name} ↗
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="container methodology-note secondary-note primary-footnote">
         <strong>Notre règle d’affichage</strong>
