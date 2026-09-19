@@ -2,6 +2,7 @@ import { sourceUrl, sourceLinkTitle } from "../../lib/source-url";
 import { connection } from "next/server";
 import { supabase } from "../../lib/supabase";
 import SiteNav from "../site-nav";
+import { politicalTone } from "../../lib/political-tone";
 
 type Issue = {
   slug: string;
@@ -171,7 +172,7 @@ export default async function ComparePage() {
 
                   if (!card) {
                     return (
-                      <article className="compare-candidate-card compare-card-awaiting" key={candidate.id}>
+                      <article className={`compare-candidate-card compare-card-awaiting ${politicalTone(candidate.party)}`} key={candidate.id}>
                         <div className="compare-person">
                           {candidate.image_url ? (
                             <img src={candidate.image_url} alt="" width="56" height="56" />
@@ -190,7 +191,7 @@ export default async function ComparePage() {
 
                   return (
                     <article
-                      className={`compare-candidate-card compare-card-${card.coverage_status}`}
+                      className={`compare-candidate-card compare-card-${card.coverage_status} ${politicalTone(candidate.party)}`}
                       key={card.id}
                     >
                       <div className="compare-person">

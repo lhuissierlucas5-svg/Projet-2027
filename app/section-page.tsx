@@ -2,6 +2,7 @@ import { sourceUrl, sourceLinkTitle } from "../lib/source-url";
 import { type PollUpdate, loadCurrentPolls, groupPolls, comparePollGroups, pollStage, stageLabels } from "../lib/polls";
 import { connection } from "next/server";
 import { supabase } from "../lib/supabase";
+import { politicalTone } from "../lib/political-tone";
 import SiteNav from "./site-nav";
 
 export type SectionKey = "candidats" | "propositions" | "candidatures" | "sondages" | "agenda";
@@ -218,7 +219,7 @@ async function CandidatesContent() {
         {candidates.map((candidate) => {
           const position = latest.get(candidate.id);
           return (
-            <article className="candidate-card" key={candidate.id}>
+            <article className={`candidate-card ${politicalTone(candidate.party)}`} key={candidate.id}>
               <a className="portrait-link" href={`/candidats/${candidate.slug}`}>
                 <div className="portrait-backdrop" aria-hidden="true">2027</div>
                 {candidate.image_url ? (
@@ -365,7 +366,7 @@ async function ContendersContent() {
 
       <div className="contender-grid">
         {contenders.map((person, index) => (
-          <article className={`contender-card contender-${person.status}`} key={person.id}>
+          <article className={`contender-card contender-${person.status} ${politicalTone(person.party)}`} key={person.id}>
             <div className="contender-top">
               {person.image_url ? (
                 <img className="contender-photo" src={person.image_url} alt={person.display_name} width="66" height="66" />

@@ -3,6 +3,7 @@ import CampaignFeed from "./campaign-feed";
 import SiteNav from "./site-nav";
 import { connection } from "next/server";
 import { supabase } from "../lib/supabase";
+import { politicalTone } from "../lib/political-tone";
 
 type Candidate = {
   id: string;
@@ -121,6 +122,7 @@ export default async function Home() {
           </div>
 
           <div className="hero-visual" aria-label="Explorer la campagne">
+            <div className="french-flag" aria-hidden="true"><span /><span /><span /></div>
             <div className="orbit orbit-one" aria-hidden="true" />
             <div className="orbit orbit-two" aria-hidden="true" />
             <div className="election-tile">
@@ -194,7 +196,7 @@ export default async function Home() {
               const position = latestPosition.get(candidate.id);
 
               return (
-                <article className="candidate-card" key={candidate.id}>
+                <article className={`candidate-card ${politicalTone(candidate.party)}`} key={candidate.id}>
                   <a
                     className="portrait-link"
                     href={`/candidats/${candidate.slug}`}

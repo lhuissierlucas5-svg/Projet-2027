@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import { notFound } from "next/navigation";
 import { supabase } from "../../../lib/supabase";
 import SiteNav from "../../site-nav";
+import { politicalTone } from "../../../lib/political-tone";
 
 type Candidate = {
   id: string;
@@ -108,7 +109,7 @@ export default async function CandidatePage({
 
       <SiteNav />
 
-      <section className="candidate-hero-v2">
+      <section className={`candidate-hero-v2 ${politicalTone(candidate.party)}`}>
         <div className="container">
           <a className="back-link candidate-back" href="/candidats">
             ← Tous les candidats

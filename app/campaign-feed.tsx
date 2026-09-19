@@ -1,6 +1,7 @@
 import { sourceUrl, sourceLinkTitle } from "../lib/source-url";
 import { type PollUpdate, loadCurrentPolls, groupPolls, comparePollGroups, pollStage, stageLabels } from "../lib/polls";
 import { supabase } from "../lib/supabase";
+import { politicalTone } from "../lib/political-tone";
 
 
 type Candidate = {
@@ -356,7 +357,7 @@ export default async function CampaignFeed() {
         ) : (
           <div className="contender-grid">
             {contenders.map((person, index) => (
-              <article className={`contender-card contender-${person.status}`} key={person.id}>
+              <article className={`contender-card contender-${person.status} ${politicalTone(person.party)}`} key={person.id}>
                 <div className="contender-top">
                   {person.image_url ? (
                     <img

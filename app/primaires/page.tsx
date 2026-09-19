@@ -2,6 +2,7 @@ import { sourceUrl, sourceLinkTitle } from "../../lib/source-url";
 import { connection } from "next/server";
 import { supabase } from "../../lib/supabase";
 import SiteNav from "../site-nav";
+import { politicalTone } from "../../lib/political-tone";
 
 type Process = {
   id: string;
@@ -311,7 +312,7 @@ export default async function PrimairesPage() {
                   );
 
                   return (
-                    <article className="primary-candidate-card primary-candidate-card-v2" key={candidate.id}>
+                    <article className={`primary-candidate-card primary-candidate-card-v2 ${politicalTone(candidate.party)}`} key={candidate.id}>
                       <div className="primary-candidate-head">
                         <div className="primary-avatar-wrap">
                           {candidate.image_url ? (
