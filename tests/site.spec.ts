@@ -65,6 +65,13 @@ const sourcePages: Array<[string, string]> = [
 for (const [path, selector] of sourcePages) {
   test(`les sources de ${path} sont cliquables et sûres`, async ({ page }) => {
     await page.goto(path);
+    // Sources inside native disclosures become reachable after opening their summary.
+    for (const details of await page.locator('details').all()) {
+      if (await details.locator(selector).count() > 0 && await details.getAttribute('open') === null) {
+        await details.locator('summary').click();
+        await expect(details).toHaveAttribute('open', '');
+      }
+    }
     const links = page.locator(selector);
     expect(await links.count()).toBeGreaterThan(0);
 

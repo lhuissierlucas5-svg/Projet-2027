@@ -130,7 +130,7 @@ export default async function ComparePage() {
       <section className="container compare-intro-strip">
         <strong>Comment lire le comparateur ?</strong>
         <p>
-          Une carte résume une mesure ou une orientation documentée. Le lien source permet de retrouver
+          Chaque ligne résume une mesure ou une orientation documentée. Le lien source permet de retrouver
           le contexte complet. Quand une proposition est encore partielle ou insuffisamment précise,
           la carte le signale explicitement.
         </p>
@@ -197,7 +197,7 @@ export default async function ComparePage() {
         <strong>Une comparaison, pas un classement</strong>
         <p>
           Les pourcentages portent sur les priorités thématiques mesurées dans l’opinion, pas sur la qualité
-          des propositions. Les cartes candidats ne reçoivent ni note, ni score, ni ordre préférentiel.
+          des propositions. Les candidats ne reçoivent ni note, ni score, ni ordre préférentiel.
         </p>
       </section>
 
