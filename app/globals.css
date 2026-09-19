@@ -3396,3 +3396,98 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 /* Keep the brand intact when the larger navigation needs horizontal scrolling. */
 .site-nav-shell > .brand { flex-shrink: 0; }
 .site-nav-scroll { min-width: 0; }
+
+
+/* Primaires — processus envisagés / à surveiller */
+.process-watch-section {
+  margin-top: 34px;
+  margin-bottom: 34px;
+  padding: 34px;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 100% 0%, #fff0b8 0, transparent 28%),
+    linear-gradient(135deg, #fff9e9 0%, #fff 72%);
+  box-shadow: 0 14px 36px #252d4b0c;
+}
+.process-watch-grid {
+  display: grid;
+  gap: 14px;
+}
+.process-watch-card {
+  padding: 22px;
+  border: 1px solid #eadfbd;
+  border-radius: 20px;
+  background: #fff;
+}
+.process-watch-topline {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.process-watch-tag {
+  background: #fff0af;
+  color: #6b5200;
+}
+.process-watch-card h3 {
+  margin: 17px 0 8px;
+  color: #171d3b;
+  font-size: 25px;
+  letter-spacing: -.04em;
+}
+.process-watch-card > p {
+  max-width: 830px;
+  margin: 0;
+  color: #61697a;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.process-watch-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 11px;
+  margin-top: 18px;
+}
+.process-watch-columns > div {
+  padding: 14px;
+  border-radius: 14px;
+  background: #f7f6f1;
+}
+.process-watch-columns span {
+  display: block;
+  color: #8a7d50;
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.process-watch-columns strong {
+  display: block;
+  margin-top: 6px;
+  color: #2e3448;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.process-watch-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 16px;
+  padding-top: 13px;
+  border-top: 1px solid #eee8d5;
+  color: #7f8592;
+  font-size: 10px;
+}
+@media (max-width: 700px) {
+  .process-watch-section {
+    width: calc(100% - 22px);
+    padding: 20px 16px;
+    border-radius: 23px;
+  }
+  .process-watch-columns {
+    grid-template-columns: 1fr;
+  }
+  .process-watch-footer {
+    flex-direction: column;
+    gap: 7px;
+  }
+}
