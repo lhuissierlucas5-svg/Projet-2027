@@ -123,3 +123,10 @@ une source probante. Consultez son compte rendu ; si vous voulez reprendre
 entièrement la main, demandez à mettre cette tâche en pause.
 
 Référence : [Tables et données — documentation Supabase](https://supabase.com/docs/guides/database/tables).
+
+## Masquer une information et régler sa durée
+
+Dans le Table Editor Supabase, modifier les tables d'origine, pas les vues `current_*`.
+Renseigner `archived_at` pour retirer une ligne du site en conservant son historique ; remettre à null pour la rétablir si elle est encore valide. `expires_at` définit une fin de validité automatique.
+Dans `political_agenda`, `sort_date` est le début et `end_date` la dernière journée. Pour une heure exacte, utiliser `starts_at` et `ends_at` avec un fuseau. `completed` et `cancelled` retirent immédiatement l'événement. Sans heure connue, le retrait a lieu à minuit de Paris après la dernière journée. Le site ouvert s'actualise sous une minute.
+Les sondages de plus de 90 jours restent en base mais quittent les pages courantes. Leur ordre est premier tour, deuxième tour, puis autres thématiques.

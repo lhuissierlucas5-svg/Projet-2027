@@ -61,7 +61,7 @@ export default async function Home() {
       .eq("slug", "choisir-2027")
       .maybeSingle(),
     supabase
-      .from("candidate_positions")
+      .from("current_candidate_positions")
       .select("id,candidate_id,topic,title,summary,position_date,source_name,source_url,highlight_value,highlight_label")
       .eq("verification_status", "verified")
       .eq("featured", true)

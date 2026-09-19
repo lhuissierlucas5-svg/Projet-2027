@@ -59,7 +59,7 @@ export default async function ComparePage() {
 
   const [issuesQuery, candidatesQuery, cardsQuery] = await Promise.all([
     supabase
-      .from("priority_issues")
+      .from("current_priority_issues")
       .select("*")
       .order("sort_order", { ascending: true }),
     supabase
@@ -67,7 +67,7 @@ export default async function ComparePage() {
       .select("id,display_name,slug,party,image_url")
       .order("display_name", { ascending: true }),
     supabase
-      .from("candidate_issue_cards")
+      .from("current_candidate_issue_cards")
       .select("*")
       .eq("verification_status", "verified"),
   ]);

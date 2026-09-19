@@ -88,7 +88,7 @@ export default async function CandidatePage({
   }
 
   const { data: positionsQuery } = await supabase
-    .from("candidate_positions")
+    .from("current_candidate_positions")
     .select("id, topic, title, summary, position_date, source_name, source_url, featured")
     .eq("candidate_id", candidate.id)
     .eq("verification_status", "verified")

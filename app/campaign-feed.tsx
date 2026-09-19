@@ -1,24 +1,6 @@
+import { type PollUpdate, loadCurrentPolls, groupPolls, comparePollGroups, pollStage, stageLabels } from "../lib/polls";
 import { supabase } from "../lib/supabase";
 
-type PollUpdate = {
-  id: string;
-  candidate_id: string;
-  title: string;
-  summary: string;
-  source_name: string;
-  source_url: string;
-  published_at: string;
-  verified_at: string;
-  institute: string | null;
-  sponsor: string | null;
-  metric_type: string | null;
-  scenario: string | null;
-  value_percent: number | null;
-  fieldwork_start: string | null;
-  fieldwork_end: string | null;
-  sample_size: number | null;
-  population: string | null;
-};
 
 type Candidate = {
   id: string;
@@ -88,30 +70,6 @@ const metrics: Record<string, string> = {
   desired_participation: "Participation souhaitée",
 };
 
-const pollStageOrder: Record<string, number> = {
-  presidential_vote_intention: 0,
-  presidential_second_round_vote_intention: 1,
-  primary_vote_intention: 2,
-  favorability: 3,
-  desired_participation: 4,
-};
-
-function comparePollGroups(
-  [, a]: [string, PollUpdate[]],
-  [, b]: [string, PollUpdate[]]
-) {
-  const firstA = a[0];
-  const firstB = b[0];
-  const stageA = pollStageOrder[firstA.metric_type ?? ""] ?? 99;
-  const stageB = pollStageOrder[firstB.metric_type ?? ""] ?? 99;
-
-  if (stageA !== stageB) return stageA - stageB;
-
-  const dateOrder = firstB.published_at.localeCompare(firstA.published_at);
-  if (dateOrder !== 0) return dateOrder;
-
-  return (firstA.scenario ?? "").localeCompare(firstB.scenario ?? "", "fr");
-}
 
 const topicLabels: Record<string, string> = {
   "pouvoir-achat": "Pouvoir d’achat",
@@ -160,47 +118,32 @@ function initials(name: string) {
 }
 
 export default async function CampaignFeed() {
-  const now = new Date();
-  const today = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Europe/Paris",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(now);
 
-  const pollFields =
-    "id,candidate_id,title,summary,source_name,source_url,published_at,verified_at,institute,sponsor,metric_type,scenario,value_percent,fieldwork_start,fieldwork_end,sample_size,population";
 
   const [polls, candidatesQuery, positionsQuery, agendaQuery, contendersQuery, primaryCandidatesQuery] =
     await Promise.all([
-      supabase
-        .from("campaign_updates")
-        .select(pollFields)
-        .eq("kind", "poll")
-        .eq("verification_status", "verified")
-        .order("published_at", { ascending: false })
-        .limit(18),
+      loadCurrentPolls(),
       supabase
         .from("candidates")
         .select("id,display_name,slug,party,image_url")
         .order("display_name"),
       supabase
-        .from("candidate_positions")
+        .from("current_candidate_positions")
         .select(
           "id,candidate_id,topic,title,summary,position_date,source_name,source_url,highlight_value,highlight_label"
         )
         .eq("verification_status", "verified")
         .order("position_date", { ascending: false }),
       supabase
-        .from("political_agenda")
+        .from("current_political_agenda")
         .select(
           "id,slug,sort_date,date_label,title,category,status,location,organizer,summary,source_name,source_url,highlight,image_url,image_credit"
         )
-        .gte("sort_date", today)
+
         .order("sort_date", { ascending: true })
         .limit(12),
       supabase
-        .from("contender_watch")
+        .from("current_contender_watch")
         .select(
           "id,display_name,party,status,status_label,note,source_name,source_url,as_of_date,sort_order,image_url,image_credit"
         )
@@ -231,31 +174,15 @@ export default async function CampaignFeed() {
     primary: "🗳",
   };
 
-  const groups = new Map<string, PollUpdate[]>();
-  for (const item of (polls.data ?? []) as PollUpdate[]) {
-    const key = JSON.stringify([
-      item.source_url,
-      item.institute,
-      item.sponsor,
-      item.metric_type,
-      item.scenario,
-      item.title,
-      item.published_at,
-      item.fieldwork_start,
-      item.fieldwork_end,
-      item.sample_size,
-      item.population,
-    ]);
-    groups.set(key, [...(groups.get(key) ?? []), item]);
-  }
+  const groups = groupPolls((polls.data ?? []) as PollUpdate[]);
 
   return (
     <>
       <section className="container campaign-pulse" aria-label="Repères de campagne">
         <div className="pulse-card pulse-violet">
           <span>ÉLECTION</span>
-          <strong>18 AVR.</strong>
-          <small>1er tour · présidentielle 2027</small>
+          <strong>{agenda.find(item => item.category === "election") ? date(agenda.find(item => item.category === "election")!.sort_date) : "À confirmer"}</strong>
+          <small>Prochaine échéance électorale</small>
         </div>
         <div className="pulse-card pulse-orange">
           <span>AGENDA</span>
@@ -508,7 +435,7 @@ export default async function CampaignFeed() {
                     <span className="tag subtle">
                       {metrics[first.metric_type ?? ""] ?? first.metric_type}
                     </span>
-                    <h3>{first.title}</h3>
+                    <p className="eyebrow">{stageLabels[pollStage(first.metric_type)]}</p><h3>{first.title}</h3>
                     <p>{first.scenario}</p>
                   </div>
                   <div className="poll-stamp">

@@ -1,3 +1,4 @@
+import { type PollUpdate, loadCurrentPolls, groupPolls, comparePollGroups, pollStage, stageLabels } from "../lib/polls";
 import { connection } from "next/server";
 import { supabase } from "../lib/supabase";
 import SiteNav from "./site-nav";
@@ -65,25 +66,6 @@ type PrimaryFace = {
   image_url: string | null;
 };
 
-type PollUpdate = {
-  id: string;
-  candidate_id: string;
-  title: string;
-  summary: string;
-  source_name: string;
-  source_url: string;
-  published_at: string;
-  verified_at: string;
-  institute: string | null;
-  sponsor: string | null;
-  metric_type: string | null;
-  scenario: string | null;
-  value_percent: number | null;
-  fieldwork_start: string | null;
-  fieldwork_end: string | null;
-  sample_size: number | null;
-  population: string | null;
-};
 
 const sectionMeta: Record<SectionKey, { eyebrow: string; title: string; lead: string; accent: string }> = {
   candidats: {
@@ -144,30 +126,6 @@ const metrics: Record<string, string> = {
   desired_participation: "Participation souhaitée",
 };
 
-const pollStageOrder: Record<string, number> = {
-  presidential_vote_intention: 0,
-  presidential_second_round_vote_intention: 1,
-  primary_vote_intention: 2,
-  favorability: 3,
-  desired_participation: 4,
-};
-
-function comparePollGroups(
-  [, a]: [string, PollUpdate[]],
-  [, b]: [string, PollUpdate[]]
-) {
-  const firstA = a[0];
-  const firstB = b[0];
-  const stageA = pollStageOrder[firstA.metric_type ?? ""] ?? 99;
-  const stageB = pollStageOrder[firstB.metric_type ?? ""] ?? 99;
-
-  if (stageA !== stageB) return stageA - stageB;
-
-  const dateOrder = firstB.published_at.localeCompare(firstA.published_at);
-  if (dateOrder !== 0) return dateOrder;
-
-  return (firstA.scenario ?? "").localeCompare(firstB.scenario ?? "", "fr");
-}
 
 function date(value: string | null) {
   if (!value) return "Non précisé";
@@ -232,7 +190,7 @@ async function CandidatesContent() {
       .select("id,display_name,slug,party,image_url,image_credit")
       .order("display_name"),
     supabase
-      .from("candidate_positions")
+      .from("current_candidate_positions")
       .select("id,candidate_id,topic,title,summary,position_date,source_name,source_url,featured,highlight_value,highlight_label")
       .eq("verification_status", "verified")
       .eq("featured", true)
@@ -313,7 +271,7 @@ async function CandidatesContent() {
 async function ProposalsContent() {
   const [positionsQuery, candidatesQuery] = await Promise.all([
     supabase
-      .from("candidate_positions")
+      .from("current_candidate_positions")
       .select("id,candidate_id,topic,title,summary,position_date,source_name,source_url,featured,highlight_value,highlight_label")
       .eq("verification_status", "verified")
       .order("position_date", { ascending: false }),
@@ -393,7 +351,7 @@ async function ProposalsContent() {
 
 async function ContendersContent() {
   const query = await supabase
-    .from("contender_watch")
+    .from("current_contender_watch")
     .select("id,display_name,party,status,status_label,note,source_name,source_url,as_of_date,image_url,image_credit")
     .order("sort_order", { ascending: true });
 
@@ -436,18 +394,12 @@ async function ContendersContent() {
 }
 
 async function AgendaContent() {
-  const today = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Europe/Paris",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(new Date());
 
   const [agendaQuery, primaryQuery] = await Promise.all([
     supabase
-      .from("political_agenda")
+      .from("current_political_agenda")
       .select("id,slug,sort_date,date_label,title,category,status,location,organizer,summary,source_name,source_url,highlight,image_url,image_credit")
-      .gte("sort_date", today)
+
       .order("sort_date", { ascending: true }),
     supabase
       .from("selection_candidates")
@@ -525,41 +477,24 @@ async function AgendaContent() {
 
 async function PollsContent() {
   const [pollsQuery, candidatesQuery] = await Promise.all([
-    supabase
-      .from("campaign_updates")
-      .select("id,candidate_id,title,summary,source_name,source_url,published_at,verified_at,institute,sponsor,metric_type,scenario,value_percent,fieldwork_start,fieldwork_end,sample_size,population")
-      .eq("kind", "poll")
-      .eq("verification_status", "verified")
-      .order("published_at", { ascending: false })
-      .limit(24),
+    loadCurrentPolls(),
     supabase
       .from("candidates")
       .select("id,display_name,slug,party,image_url,image_credit"),
   ]);
 
+  if (pollsQuery.error) return <p className="container status" role="status">Les sondages sont momentanément indisponibles.</p>;
   const polls = (pollsQuery.data ?? []) as PollUpdate[];
   const candidates = (candidatesQuery.data ?? []) as Candidate[];
   const names = new Map(candidates.map((candidate) => [candidate.id, candidate]));
-  const groups = new Map<string, PollUpdate[]>();
-
-  for (const item of polls) {
-    const key = JSON.stringify([
-      item.source_url,
-      item.institute,
-      item.metric_type,
-      item.scenario,
-      item.title,
-      item.published_at,
-    ]);
-    groups.set(key, [...(groups.get(key) ?? []), item]);
-  }
+  const groups = groupPolls(polls);
 
   return (
     <section className="container section-page-content">
       <div className="section-heading">
         <div>
           <p className="eyebrow">SONDAGES VÉRIFIÉS</p>
-          <h2>{groups.size} enquêtes affichées<span className="accent-dot">.</span></h2>
+          <h2>{groups.size} scénarios affichés<span className="accent-dot">.</span></h2>
         </div>
         <p>Un sondage décrit un état de l’opinion à un instant donné ; il ne prédit pas le résultat final.</p>
       </div>
@@ -574,7 +509,7 @@ async function PollsContent() {
               <div className="poll-heading">
                 <div>
                   <span className="tag subtle">{metrics[first.metric_type ?? ""] ?? first.metric_type}</span>
-                  <h3>{first.title}</h3>
+                  <p className="eyebrow">{stageLabels[pollStage(first.metric_type)]}</p><h3>{first.title}</h3>
                   <p>{first.scenario}</p>
                 </div>
                 <div className="poll-stamp">
