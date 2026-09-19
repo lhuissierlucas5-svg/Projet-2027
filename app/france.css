@@ -1,0 +1,16 @@
+/* Separate stylesheet: ensures the production alias receives a new immutable asset. */
+:root { --accent:#000091; --fr-blue:#000091; --fr-red:#e1000f; --party:#000091; --party-soft:#eef0ff; --party-border:#cfd4ff; --background:#f5f7ff; }
+body { background:var(--background); }
+.brand > span:not(.brand-dot), h1 em, .accent-dot { color:var(--fr-red); }
+.brand-dot { background:var(--fr-red); }
+.site-header { border-bottom:3px solid var(--fr-blue); }
+.site-header::after { content:""; display:block; height:3px; background:linear-gradient(90deg,var(--fr-blue) 0 33.333%,#fff 33.333% 66.666%,var(--fr-red) 66.666%); }
+nav .nav-agenda { color:#fff; background:var(--fr-red); }
+.hero { background:radial-gradient(circle at 84% 18%,#dce2ff 0,transparent 30%),radial-gradient(circle at 14% 90%,#ffe1e3 0,transparent 27%),#f5f7ff; }
+.hero-badge { background:#e8ebff; color:var(--fr-blue); border:1px solid #c9d0ff; }
+.button.primary,.election-tile { background:var(--fr-blue); }
+.tile-star,.visual-spark { color:var(--fr-red); }
+.french-flag { position:absolute; width:350px; height:234px; display:grid; grid-template-columns:repeat(3,1fr); overflow:hidden; border-radius:28px; transform:rotate(8deg); box-shadow:0 24px 55px #06155d1f; opacity:.23; }
+.french-flag span:nth-child(1) { background:var(--fr-blue); }.french-flag span:nth-child(2) { background:#fff; }.french-flag span:nth-child(3) { background:var(--fr-red); }
+.tone-blue { --party:#0050a4; --party-soft:#e8f1ff; --party-border:#b8d5fa; }.tone-rose { --party:#b00054; --party-soft:#fce8f1; --party-border:#f4bdd4; }.tone-green { --party:#18753c; --party-soft:#e5f5eb; --party-border:#b9dfc6; }.tone-gold { --party:#8a5d00; --party-soft:#fff3d6; --party-border:#ebcf8a; }
+.candidate-card,.contender-card,.compare-candidate-card,.primary-candidate-card { border-color:var(--party-border); }.candidate-card .portrait-link { border-bottom:5px solid var(--party); }.candidate-card .portrait-backdrop { color:color-mix(in srgb,var(--party) 17%,white); }.candidate-card .portrait-arrow,.candidate-card .party-label,.contender-card .contender-party,.compare-candidate-card .compare-person p,.primary-candidate-card .candidate-party { color:var(--party); }.candidate-card .candidate-button { background:var(--party-soft); color:var(--party); }.contender-card { border-left:5px solid var(--party); }.contender-card .contender-status,.compare-candidate-card .compare-status { color:var(--party); border-color:var(--party-border); background:var(--party-soft); }.compare-candidate-card,.primary-candidate-card { box-shadow:inset 0 4px 0 var(--party); }
