@@ -109,3 +109,39 @@ test('le serveur répond avec une base disponible', async ({ request }) => {
   expect(response.status()).toBe(200);
   expect((await response.json()).status).toBe('ok');
 });
+
+const structuredPages: Array<[string,string]> = [
+ ['/candidats','.candidate-grid'], ['/candidatures','.contender-grid'],
+ ['/propositions','.proposal-spotlight-grid'], ['/agenda','.agenda-card-v2'],
+ ['/candidats/edouard-philippe','.candidate-hero-grid-v2'], ['/primaires','.primary-candidate-grid-v2'],
+];
+for(const [path,selector] of structuredPages) {
+ test(`${path} conserve sa grille et ses espacements`,async({page})=>{
+  await page.goto(path);
+  const grid=page.locator(selector).first();
+  await expect(grid).toBeVisible();
+  expect(await grid.evaluate(el=>getComputedStyle(el).display)).toBe('grid');
+  expect(await grid.evaluate(el=>parseFloat(getComputedStyle(el).gap))).toBeGreaterThanOrEqual(16);
+ });
+}
+test('les portraits restent grands et les partis identifiables',async({page})=>{
+ await page.goto('/candidats');
+ const portrait=page.locator('.candidate-photo').first();
+ expect((await portrait.boundingBox())?.height).toBeGreaterThanOrEqual(250);
+ expect(await page.locator('.candidate-card').first().evaluate(el=>getComputedStyle(el).getPropertyValue('--party').trim())).not.toBe('');
+});
+test('les sondages et le comparateur sont de vrais tableaux',async({page})=>{
+ await page.goto('/sondages');
+ await expect(page.locator('.poll-results').first()).toBeVisible();
+ expect(await page.locator('.poll-results tbody tr').count()).toBeGreaterThan(0);
+ await page.goto('/comparer');
+ await expect(page.locator('.comparison-table').first()).toBeVisible();
+ expect(await page.locator('.comparison-table').first().locator('thead th').count()).toBe(4);
+ await page.locator('.comparison-details summary').first().click();
+ await expect(page.locator('.comparison-details').first()).toHaveAttribute('open','');
+});
+test('la charte et les styles structurels sont réellement chargés',async({page})=>{
+ await page.goto('/');
+ expect(await page.locator('.election-tile').evaluate(el=>getComputedStyle(el).backgroundColor)).toBe('rgb(0, 0, 145)');
+ expect(await page.locator('.agenda-card-v2').first().evaluate(el=>getComputedStyle(el).display)).toBe('grid');
+});

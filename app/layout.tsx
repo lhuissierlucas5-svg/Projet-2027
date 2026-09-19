@@ -2,6 +2,7 @@ import LiveRefresh from "./live-refresh";
 import type { Metadata } from "next";
 import "./globals.css";
 import "./france.css";
+import "./ui-layout.css";
 
 export const metadata: Metadata = {
   title: "Élections 2027",

@@ -166,75 +166,27 @@ export default async function ComparePage() {
                 </div>
               </div>
 
-              <div className="compare-candidate-grid">
-                {candidates.map((candidate) => {
-                  const card = issueCards.find((item) => item.candidate_id === candidate.id);
-
-                  if (!card) {
-                    return (
-                      <article className={`compare-candidate-card compare-card-awaiting ${politicalTone(candidate.party)}`} key={candidate.id}>
-                        <div className="compare-person">
-                          {candidate.image_url ? (
-                            <img src={candidate.image_url} alt="" width="56" height="56" />
-                          ) : (
-                            <span>{candidate.display_name.slice(0, 2)}</span>
-                          )}
-                          <div>
-                            <h3>{candidate.display_name}</h3>
-                            <p>{candidate.party ?? "Personnalité suivie"}</p>
-                          </div>
-                        </div>
-                        <p className="compare-empty">Pas encore de mesure suffisamment documentée sur ce thème.</p>
-                      </article>
-                    );
-                  }
-
-                  return (
-                    <article
-                      className={`compare-candidate-card compare-card-${card.coverage_status} ${politicalTone(candidate.party)}`}
-                      key={card.id}
-                    >
-                      <div className="compare-person">
-                        {candidate.image_url ? (
-                          <img src={candidate.image_url} alt="" width="56" height="56" loading="lazy" />
-                        ) : (
-                          <span>{candidate.display_name.slice(0, 2)}</span>
-                        )}
-                        <div>
-                          <h3>
-                            <a href={`/candidats/${candidate.slug}`}>{candidate.display_name}</a>
-                          </h3>
-                          <p>{candidate.party ?? "Personnalité suivie"}</p>
-                        </div>
-                      </div>
-
-                      <span className="compare-status">{statusLabel(card.coverage_status)}</span>
-
-                      <p className="compare-lead">
-                        {card.lead_before}
-                        <mark>{card.lead_highlight}</mark>
-                        {card.lead_after}
-                      </p>
-
-                      {card.key_value && (
-                        <div className="compare-key-value">
-                          <strong>{card.key_value}</strong>
-                          <span>{card.key_label}</span>
-                        </div>
-                      )}
-
-                      <h4>{card.measure_title}</h4>
-                      <p className="compare-summary">{card.summary}</p>
-
-                      <div className="compare-card-footer">
-                        <time dateTime={card.source_date}>{formatDate(card.source_date)}</time>
-                        <a href={sourceUrl(card.source_url, card.source_excerpt)} title={sourceLinkTitle(card.source_excerpt)} target="_blank" rel="noopener noreferrer">
-                          {card.source_name} ↗
-                        </a>
-                      </div>
-                    </article>
-                  );
-                })}
+              <div className="comparison-table-wrap" tabIndex={0} role="region" aria-label={`Tableau comparatif : ${issue.name}`}>
+                <table className="comparison-table">
+                  <caption>{issue.name} — propositions documentées, par ordre alphabétique</caption>
+                  <thead><tr><th scope="col">Candidat</th><th scope="col">Proposition</th><th scope="col">Repère clé</th><th scope="col">Source & date</th></tr></thead>
+                  <tbody>{candidates.map(candidate => {
+                    const card = issueCards.find(item => item.candidate_id === candidate.id);
+                    return <tr key={candidate.id} className={politicalTone(candidate.party)}>
+                      <th scope="row"><div className="compare-person">
+                        {candidate.image_url ? <img src={candidate.image_url} alt="" width="80" height="96" loading="lazy" /> : <span>{candidate.display_name.slice(0,2)}</span>}
+                        <div><h3><a href={`/candidats/${candidate.slug}`}>{candidate.display_name}</a></h3><p>{candidate.party ?? "Personnalité suivie"}</p></div>
+                      </div></th>
+                      <td data-label="Proposition">{card ? <>
+                        <span className="compare-status">{statusLabel(card.coverage_status)}</span>
+                        <h4>{card.measure_title}</h4>
+                        <details className="comparison-details"><summary>Lire le détail</summary><p>{card.summary}</p><p>{card.lead_before} <mark>{card.lead_highlight}</mark> {card.lead_after}</p></details>
+                      </> : <p className="compare-empty">Pas encore de mesure suffisamment documentée sur ce thème.</p>}</td>
+                      <td data-label="Repère clé">{card?.key_value ? <div className="compare-key-value"><strong>{card.key_value}</strong><span>{card.key_label}</span></div> : <span className="table-muted">Non renseigné</span>}</td>
+                      <td data-label="Source & date">{card ? <div className="compare-card-footer"><time dateTime={card.source_date}>{formatDate(card.source_date)}</time><a href={sourceUrl(card.source_url,card.source_excerpt)} title={sourceLinkTitle(card.source_excerpt)} target="_blank" rel="noopener noreferrer">{card.source_name} ↗</a></div> : <span className="table-muted">À documenter</span>}</td>
+                    </tr>;
+                  })}</tbody>
+                </table>
               </div>
             </section>
           );

@@ -1,3 +1,4 @@
+import PollResults from "./poll-results";
 import { sourceUrl, sourceLinkTitle } from "../lib/source-url";
 import { type PollUpdate, loadCurrentPolls, groupPolls, comparePollGroups, pollStage, stageLabels } from "../lib/polls";
 import { supabase } from "../lib/supabase";
@@ -441,46 +442,7 @@ export default async function CampaignFeed() {
                   </div>
                 </div>
 
-                <ol className="poll-chart poll-chart-v2" aria-label={first.title}>
-                  {sorted.map((item) => {
-                    const candidate = names.get(item.candidate_id);
-                    const score = Number(item.value_percent);
-
-                    return (
-                      <li className="chart-row chart-row-v2" key={item.id}>
-                        <div className="chart-name chart-name-v2">
-                          {candidate?.image_url ? (
-                            <img
-                              src={candidate.image_url}
-                              alt=""
-                              width="38"
-                              height="38"
-                              loading="lazy"
-                            />
-                          ) : null}
-                          <span>
-                            {candidate ? (
-                              <a href={`/candidats/${candidate.slug}`}>
-                                {candidate.display_name}
-                              </a>
-                            ) : (
-                              "Profil indisponible"
-                            )}
-                          </span>
-                        </div>
-                        <div className="chart-track" aria-hidden="true">
-                          <div
-                            className="chart-bar"
-                            style={{ width: `${Math.max(0, Math.min(100, score))}%` }}
-                          />
-                        </div>
-                        <strong className="chart-value">
-                          {score.toLocaleString("fr-FR")} <small>%</small>
-                        </strong>
-                      </li>
-                    );
-                  })}
-                </ol>
+              <PollResults entries={sorted} candidates={candidates} title={first.title} />
 
                 <details className="method-details">
                   <summary>
