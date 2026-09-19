@@ -3295,3 +3295,101 @@ nav a {
     border-radius: 24px;
   }
 }
+
+/* UI audit: readable type, unobstructed sources and resilient card layouts. */
+.contender-number { display: none; }
+.contender-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 22px;
+}
+.contender-top { flex-wrap: wrap; }
+.contender-status { font-size: 11px; line-height: 1.4; }
+.contender-card h3 { line-height: 1.2; letter-spacing: -.025em; }
+.contender-party { font-size: 12px; }
+.contender-note {
+  display: block;
+  overflow: visible;
+  font-size: 14px;
+  line-height: 1.65;
+  margin-bottom: 20px;
+}
+.contender-footer {
+  margin-top: auto;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #596277;
+}
+.contender-footer a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 1px solid #dddfea;
+  border-radius: 10px;
+  background: #f5f5fc;
+  color: #40378f;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: background .15s, border-color .15s;
+}
+.contender-footer a:hover { background: #eae7ff; border-color: #b7afe7; text-decoration: none; }
+.contender-potential { --contender-accent: #92500d; }
+
+/* Preserve the editorial hierarchy while avoiding cramped multi-line titles. */
+h1, h2, h3, h4 { text-wrap: balance; overflow-wrap: break-word; }
+.section-page-hero h1 { line-height: 1.08; letter-spacing: -.045em; }
+.section-page-hero-inner > div > p:last-child { font-size: 16px; line-height: 1.65; }
+.section-heading > p { line-height: 1.65; }
+.hero-badge, .eyebrow { font-size: 11px; line-height: 1.5; }
+.party-label, .position-preview-meta, .position-preview-meta time,
+.proposal-person small, .proposal-source, .candidate-key-number span,
+.compare-person p, .compare-key-value span, .compare-status,
+.primary-photo-credit, .image-credit { font-size: 12px; line-height: 1.5; }
+.image-credit, .primary-photo-credit { color: #596277; }
+.compare-summary, .proposal-spotlight-card > p { font-size: 14px; line-height: 1.65; }
+.compare-card-footer, .compare-priority-score a { font-size: 12px; line-height: 1.5; }
+.compare-card-footer { flex-wrap: wrap; align-items: center; color: #596277; }
+.compare-card-footer a, .compare-priority-score a { color: #35416b; text-underline-offset: 3px; }
+.compare-card-footer a { display: inline-flex; align-items: center; min-height: 44px; }
+.compare-person > div, .proposal-person > div, .contender-card,
+.compare-candidate-card, .agenda-content-v2 { min-width: 0; }
+.compare-status { max-width: 100%; width: fit-content; }
+.compare-card-awaiting { opacity: 1; }
+
+.site-nav-link, .page-topic-rail a, .compare-topic-pill span { font-size: 12px; }
+.site-nav-link, .page-topic-rail a { min-height: 44px; display: inline-flex; align-items: center; }
+.button, .candidate-button { font-size: 14px; line-height: 1.4; min-height: 44px; }
+a:focus-visible, button:focus-visible, summary:focus-visible {
+  outline: 3px solid #7965e8;
+  outline-offset: 4px;
+  border-radius: 5px;
+}
+.poll-heading p, .poll-stamp, .method-details, .poll-method { font-size: 14px; line-height: 1.6; }
+.poll-heading .eyebrow { margin-top: 12px; font-size: 11px; color: #5248a2; }
+.chart-name, .chart-name-v2 { font-size: 14px; line-height: 1.4; }
+.tag.subtle, .chart-note { font-size: 12px; line-height: 1.5; }
+.method-details summary { min-height: 44px; align-items: center; }
+.agenda-content-v2 > p { font-size: 14px; line-height: 1.65; }
+.standalone-agenda .agenda-content-v2 > p { display: block; overflow: visible; }
+.agenda-status-row { flex-wrap: wrap; }
+.agenda-status-row small, .agenda-meta-v2 { font-size: 12px; line-height: 1.5; }
+.agenda-meta-v2 a { display: inline-flex; align-items: center; min-height: 44px; }
+
+@media (max-width: 760px) {
+  .section-page-hero h1, .compare-hero h1 { font-size: clamp(34px, 9vw, 48px); }
+  .contender-card { padding: 20px; }
+  .page-topic-rail, .compare-topic-nav { top: 112px; }
+  .proposal-topic-block, .compare-issue-section { scroll-margin-top: 190px; }
+  .poll-method { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .poll-method dd { margin: 0 0 12px; overflow-wrap: anywhere; }
+  .compare-priority-score { flex-wrap: wrap; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .contender-footer a { transition: none; }
+}
