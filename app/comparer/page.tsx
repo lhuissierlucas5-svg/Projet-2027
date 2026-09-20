@@ -177,13 +177,17 @@ export default async function ComparePage() {
                         {candidate.image_url ? <img src={candidate.image_url} alt="" width="80" height="96" loading="lazy" /> : <span>{candidate.display_name.slice(0,2)}</span>}
                         <div><h3><a href={`/candidats/${candidate.slug}`}>{candidate.display_name}</a></h3><p>{candidate.party ?? "Personnalité suivie"}</p></div>
                       </div></th>
-                      <td data-label="Proposition">{card ? <>
+                      <td data-label="Proposition">{card ? <div className="compare-proposal-cell">
                         <span className="compare-status">{statusLabel(card.coverage_status)}</span>
+                        <p className="compare-lead">{card.lead_before} <mark>{card.lead_highlight}</mark> {card.lead_after}</p>
                         <h4>{card.measure_title}</h4>
-                        <details className="comparison-details"><summary>Lire le détail</summary><p>{card.summary}</p><p>{card.lead_before} <mark>{card.lead_highlight}</mark> {card.lead_after}</p></details>
-                      </> : <p className="compare-empty">Pas encore de mesure suffisamment documentée sur ce thème.</p>}</td>
+                        <details className="comparison-details">
+                          <summary>Contexte et détail <span aria-hidden="true">＋</span></summary>
+                          <p className="compare-summary">{card.summary}</p>
+                        </details>
+                      </div> : <p className="compare-empty">Pas encore de mesure suffisamment documentée sur ce thème.</p>}</td>
                       <td data-label="Repère clé">{card?.key_value ? <div className="compare-key-value"><strong>{card.key_value}</strong><span>{card.key_label}</span></div> : <span className="table-muted">Non renseigné</span>}</td>
-                      <td data-label="Source & date">{card ? <div className="compare-card-footer"><time dateTime={card.source_date}>{formatDate(card.source_date)}</time><a href={sourceUrl(card.source_url,card.source_excerpt)} title={sourceLinkTitle(card.source_excerpt)} target="_blank" rel="noopener noreferrer">{card.source_name} ↗</a></div> : <span className="table-muted">À documenter</span>}</td>
+                      <td data-label="Source & date">{card ? <div className="compare-card-footer"><time dateTime={card.source_date}>{formatDate(card.source_date)}</time><a href={sourceUrl(card.source_url,card.source_excerpt)} title={sourceLinkTitle(card.source_excerpt)} target="_blank" rel="noopener noreferrer"><span>Source</span>{card.source_name} ↗</a></div> : <span className="table-muted">À documenter</span>}</td>
                     </tr>;
                   })}</tbody>
                 </table>

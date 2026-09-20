@@ -137,6 +137,18 @@ test('les portraits restent grands et les partis identifiables',async({page})=>{
  expect((await portrait.boundingBox())?.height).toBeGreaterThanOrEqual(250);
  expect(await page.locator('.candidate-card').first().evaluate(el=>getComputedStyle(el).getPropertyValue('--party').trim())).not.toBe('');
 });
+test('le comparateur présente chaque ligne comme une fiche visuelle sans classement', async ({ page }) => {
+ await page.goto('/comparer');
+ const table=page.locator('.comparison-table').first();
+ await expect(table).toBeVisible();
+ expect(await table.evaluate(el=>getComputedStyle(el).borderCollapse)).toBe('separate');
+ const firstRow=table.locator('tbody tr').first();
+ await expect(firstRow.locator('.compare-person')).toBeVisible();
+ if (await firstRow.locator('.compare-proposal-cell').count()) {
+  await expect(firstRow.locator('.compare-lead')).toBeVisible();
+ }
+});
+
 test('les sondages et le comparateur sont de vrais tableaux',async({page})=>{
  await page.goto('/sondages');
  await expect(page.locator('.poll-results').first()).toBeVisible();
@@ -149,7 +161,8 @@ test('les sondages et le comparateur sont de vrais tableaux',async({page})=>{
 });
 test('la charte et les styles structurels sont réellement chargés',async({page})=>{
  await page.goto('/');
- expect(await page.locator('.election-tile').evaluate(el=>getComputedStyle(el).backgroundColor)).toBe('rgb(0, 0, 145)');
+ await expect(page.locator('.flag-year-lockup .election-year')).toHaveText('2027');
+ expect(await page.locator('.election-year').evaluate(el=>getComputedStyle(el).textShadow)).not.toBe('none');
  expect(await page.locator('.agenda-card-v2').first().evaluate(el=>getComputedStyle(el).display)).toBe('grid');
 });
 
