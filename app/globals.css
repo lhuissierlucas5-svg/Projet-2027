@@ -3895,28 +3895,40 @@ nav .nav-agenda { color: #fff; background: var(--fr-red); }
 
 .comparison-table .compare-key-value {
   min-height: 112px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 8px;
   margin: 0;
-  padding: 14px;
-  border: 1px solid color-mix(in srgb, var(--issue-accent) 17%, white);
-  border-radius: 16px;
+  padding: 16px 12px;
+  border: 1px solid color-mix(in srgb, var(--issue-accent) 15%, white);
+  border-radius: 18px;
   background:
-    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--issue-accent) 16%, white) 0, transparent 50%),
-    var(--issue-soft);
+    radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--issue-accent) 14%, white) 0, transparent 58%),
+    color-mix(in srgb, var(--issue-soft) 72%, white);
+  text-align: center;
 }
 .comparison-table .compare-key-value strong {
+  display: block;
+  max-width: 100%;
   color: var(--issue-accent);
-  font-size: clamp(27px, 3vw, 38px);
-  line-height: .95;
+  font-size: clamp(24px, 2.35vw, 32px);
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.045em;
+  line-height: 1.02;
+  text-wrap: balance;
 }
 .comparison-table .compare-key-value span {
-  margin-top: 8px;
-  color: #5b6477;
-  font-size: 11px;
-  font-weight: 750;
-  line-height: 1.4;
+  display: block;
+  max-width: 120px;
+  margin: 0 auto;
+  color: #5e677a;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: .035em;
+  text-align: center;
 }
 .comparison-table .table-muted {
   display: inline-flex;
