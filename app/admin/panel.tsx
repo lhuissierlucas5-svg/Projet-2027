@@ -59,6 +59,10 @@ export default function AdminPanel() {
    const value=draft[field.key];
    payload[field.key]=value===""||value===undefined ? (field.key==="lead_before"||field.key==="lead_after" ? "":null) : value;
   }
+  if(section.table==="daily_information_queue"){
+   const nextStatus=String(payload.status??selected.status??"review");
+   payload.reviewed_at=nextStatus==="review"?null:new Date().toISOString();
+  }
   if(payload.source_excerpt && String(payload.source_excerpt).trim().length<3){setBusy(false);setMessage("Le passage doit contenir entre 3 et 300 caractères.");return;}
   if(section.archive){
    if(action==="archive")payload.archived_at=new Date().toISOString();
@@ -103,12 +107,13 @@ export default function AdminPanel() {
    <label>Rechercher<input type="search" value={query} onChange={e=>setQuery(e.target.value)} /></label>
    {section.create&&<button disabled={busy} onClick={()=>open({...section.create} as Row)}>+ Ajouter un brouillon</button>}
    {!loaded&&<p>Chargement…</p>}{loaded&&!rows.length&&<p>Aucun contenu disponible.</p>}
-   {rows.filter(r=>String(r[section.title]).toLocaleLowerCase("fr").includes(query.toLocaleLowerCase("fr"))).map(row=><button className="admin-record" disabled={busy} aria-pressed={row.id===selected?.id} key={String(row.id)} onClick={()=>open(row)}><strong>{String(row[section.title])}</strong><small>{candidates.find(c=>c.id===row.candidate_id)?.display_name} {row.archived_at?" · Archivé / brouillon":row.verification_status==="review"?" · À vérifier":""}</small></button>)}
+   {rows.filter(r=>String(r[section.title]).toLocaleLowerCase("fr").includes(query.toLocaleLowerCase("fr"))).map(row=><button className="admin-record" disabled={busy} aria-pressed={row.id===selected?.id} key={String(row.id)} onClick={()=>open(row)}><strong>{String(row[section.title])}</strong><small>{candidates.find(c=>c.id===row.candidate_id)?.display_name??(section.table==="daily_information_queue"?"Veille générale":"")} {section.table==="daily_information_queue"?` · ${optionLabels[String(row.status)]??String(row.status)}`:row.archived_at?" · Archivé / brouillon":row.verification_status==="review"?" · À vérifier":""}</small></button>)}
    {rows.length===500&&<p>Les 500 éléments les plus récemment modifiés sont affichés.</p>}
   </section>
   <section className="management-card admin-editor">{!selected?<p>Sélectionne un contenu pour le modifier.</p>:<form onSubmit={e=>{e.preventDefault();void save("save");}}>
    <h2>{selected.id?"Modifier le contenu":"Nouveau brouillon"}</h2>
    <p>Les changements d’un contenu publié sont visibles après enregistrement. Les nouveaux contenus restent en brouillon jusqu’à publication.</p>
+   {section.table==="daily_information_queue"&&<p>Cette rubrique contient des pistes détectées automatiquement. Ouvre la source avant de marquer une piste comme examinée ; aucune piste n’est publiée automatiquement sur le site.</p>}
    {section.table==="campaign_updates"&&<p>Seuls le texte et les sources sont modifiables ici. Les chiffres et scénarios sont contrôlés ensemble par la veille pour éviter les résultats incomplets.</p>}
    {section.fields.map(field=><label key={field.key}>{field.label}{field.required?" *":""}
     {field.type==="textarea"?<textarea rows={field.key==="summary"?4:3} required={field.required} maxLength={field.key.endsWith("source_excerpt")?300:undefined} value={String(draft[field.key]??"")} onChange={e=>setDraft({...draft,[field.key]:e.target.value})} />:

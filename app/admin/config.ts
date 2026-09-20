@@ -9,6 +9,10 @@ export const sections:Section[] = [
   {key:"candidates_title",label:"Titre de la section candidats",required:true},{key:"primaries_title",label:"Titre de la section désignations",required:true},{key:"primaries_description",label:"Introduction de la section désignations",type:"textarea",required:true},
   {key:"methodology",label:"Méthode et périmètre",type:"textarea",required:true}
  ]},
+ {table:"daily_information_queue",label:"Veille quotidienne",title:"title",fields:[
+  {key:"status",label:"Traitement",type:"select",options:["review","processed","dismissed"],required:true},
+  {key:"review_note",label:"Note de revue",type:"textarea"}
+ ]},
  {table:"political_agenda",label:"Agenda",title:"title",archive:true,create:{category:"meeting",status:"upcoming"},fields:[
   {key:"slug",label:"Identifiant du rendez-vous",required:true},{key:"title",label:"Titre",required:true},{key:"summary",label:"Résumé",type:"textarea",required:true},
   {key:"sort_date",label:"Premier jour",type:"date",required:true},{key:"end_date",label:"Dernier jour (si plusieurs jours)",type:"date"},{key:"date_label",label:"Date affichée",required:true},
@@ -33,5 +37,5 @@ export const sections:Section[] = [
 ];
 export const optionLabels:Record<string,string> = {
  upcoming:"À venir",ongoing:"En cours",date_tbc:"Date à confirmer",completed:"Terminé",cancelled:"Annulé",meeting:"Réunion / meeting",debate:"Débat",primary:"Primaire",institutional:"Institutionnel",election:"Élection",deadline:"Échéance",budget:"Budget",
- "pouvoir-achat":"Pouvoir d’achat",fiscalite:"Fiscalité",immigration:"Immigration","guerre-defense":"Défense",ecologie:"Écologie",declared:"Déclarée",potential:"Potentielle",conditional:"Conditionnelle"
+ "pouvoir-achat":"Pouvoir d’achat",fiscalite:"Fiscalité",immigration:"Immigration","guerre-defense":"Défense",ecologie:"Écologie",declared:"Déclarée",potential:"Potentielle",conditional:"Conditionnelle",review:"À examiner",processed:"Examinée",dismissed:"Écartée"
 };

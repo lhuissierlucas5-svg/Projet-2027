@@ -23,7 +23,7 @@ export default async function TrackingPage() {
    <p>Les dates affichées dans les articles restent celles des faits. Une collecte réussie peut ne trouver aucune nouveauté.</p>
   </section>
   <section className="management-card"><h2>Comment le site reste à jour</h2>
-   <ul><li>Les événements terminés quittent automatiquement l’agenda public.</li><li>Les sondages sont classés par tour, puis du plus récent au plus ancien.</li><li>Les éléments retirés sont archivés pour conserver leur historique.</li></ul>
+   <ul><li>Chaque jour, une veille identique est lancée pour chaque profil suivi, plus une recherche générale sur la présidentielle.</li><li>Les nouveautés détectées arrivent dans une file privée « À examiner » : elles ne sont jamais publiées automatiquement.</li><li>Un échantillon tournant des sources déjà utilisées est contrôlé à chaque passage ; les liens à revoir sont signalés sans modifier le contenu publié.</li><li>Les éléments dont une date d’expiration explicite est dépassée sont archivés automatiquement.</li></ul>
    <p>Une veille planifiée ne garantit pas une exécution réussie : son résultat apparaît ici lorsqu’il est enregistré. Les horaires sont affichés à l’heure de Paris.</p>
   </section>
   <section className="management-card"><h2>Dernières exécutions</h2>
