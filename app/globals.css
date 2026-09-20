@@ -3627,7 +3627,7 @@ nav .nav-agenda { color: #fff; background: var(--fr-red); }
 }
 .election-year {
   position: absolute;
-  inset: 0 11%;
+  inset: 0 15%;
   z-index: 2;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
