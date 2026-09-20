@@ -3573,3 +3573,14 @@ nav .nav-agenda { color: #fff; background: var(--fr-red); }
 .admin-columns{display:grid;grid-template-columns:320px minmax(0,1fr);gap:24px}.admin-columns .management-card{margin:0}.admin-list{align-self:start;max-height:900px;overflow-y:auto}.admin-page .admin-record{display:block;text-align:left;width:100%;margin-top:10px;padding:14px}.admin-record strong{display:block}.admin-record small{display:block;font-size:12px;font-weight:400;margin-top:6px}.admin-record[aria-pressed=true]{border-color:#674eb8;background:#f3effb}
 .admin-source{display:inline-block;margin:0 0 20px}.admin-message{position:sticky;bottom:16px;border-radius:12px;padding:16px 20px;background:#223550;color:#fff;box-shadow:0 4px 24px #0002}.admin-editor p,.admin-login p{font-size:14px;color:#59667a}.admin-actions{border-top:1px solid #e1e5ed;padding-top:20px}
 @media(max-width:760px){.management-page{padding:32px 16px 48px}.management-card{padding:20px}.admin-columns{grid-template-columns:1fr}.admin-list{max-height:350px}.admin-tabs button{flex-grow:1}.admin-actions button{flex-grow:1}.admin-toolbar span{overflow-wrap:anywhere}}
+
+
+/* Accueil éditorial piloté depuis Supabase */
+.homepage-figures{padding:34px 0 30px}
+.homepage-figures .section-heading{margin-bottom:18px}
+.homepage-figure-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:0}
+.homepage-figure-grid>div{min-width:0;padding:22px;border:1px solid var(--border);border-radius:18px;background:#fff}
+.homepage-figure-grid dt{color:var(--muted);font-size:12px;line-height:1.45}
+.homepage-figure-grid dd{margin:8px 0 0;font-size:clamp(34px,5vw,52px);font-weight:800;line-height:1;letter-spacing:-.05em;color:var(--foreground)}
+.homepage-methodology{margin-top:42px;margin-bottom:46px}
+@media(max-width:760px){.homepage-figure-grid{grid-template-columns:1fr}}

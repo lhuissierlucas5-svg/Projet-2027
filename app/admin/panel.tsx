@@ -53,7 +53,8 @@ export default function AdminPanel() {
   if(action==="publish" && !window.confirm("As-tu vérifié les informations et lu la source ? Cette action les rend éligibles à l’affichage public."))return;
   if(action==="archive" && !window.confirm("Retirer cet élément du site et le conserver dans les archives ?"))return;
   setBusy(true);setMessage("");
-  const payload:Row={...(!selected.id ? section.create as Row : {}),updated_at:new Date().toISOString()};
+  const payload:Row={...(!selected.id ? section.create as Row : {})};
+  if(section.table!=="homepage_content")payload.updated_at=new Date().toISOString();
   for(const field of section.fields){
    const value=draft[field.key];
    payload[field.key]=value===""||value===undefined ? (field.key==="lead_before"||field.key==="lead_after" ? "":null) : value;

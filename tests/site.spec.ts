@@ -152,3 +152,13 @@ test('la charte et les styles structurels sont réellement chargés',async({page
  expect(await page.locator('.election-tile').evaluate(el=>getComputedStyle(el).backgroundColor)).toBe('rgb(0, 0, 145)');
  expect(await page.locator('.agenda-card-v2').first().evaluate(el=>getComputedStyle(el).display)).toBe('grid');
 });
+
+
+test('l’accueil expose ses repères éditoriaux sans classement', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('.homepage-figure-grid > div')).toHaveCount(3);
+  for (const value of await page.locator('.homepage-figure-grid dd').allTextContents()) {
+    expect(Number.parseInt(value.trim(), 10)).toBeGreaterThanOrEqual(0);
+  }
+  await expect(page.locator('.homepage-methodology p')).toHaveText(/\S/);
+});

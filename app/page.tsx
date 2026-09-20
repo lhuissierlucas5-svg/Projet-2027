@@ -28,6 +28,40 @@ type Position = {
   highlight_label: string | null;
 };
 
+type HomepageContent = {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  primary_label: string;
+  secondary_label: string;
+  banner: string;
+  figures_title: string;
+  profiles_label: string;
+  positions_label: string;
+  events_label: string;
+  candidates_title: string;
+  primaries_title: string;
+  primaries_description: string;
+  methodology: string;
+};
+
+const homepageDefaults: HomepageContent = {
+  eyebrow: "PRÉSIDENTIELLE FRANÇAISE · 2027",
+  title: "Comprendre les programmes. Éclairer votre choix.",
+  subtitle: "Les personnalités, leurs propositions et les temps forts de la campagne présidentielle, réunis pour vous aider à comparer les idées et à remonter aux sources.",
+  primary_label: "Explorer les candidats",
+  secondary_label: "Comparer les propositions",
+  banner: "Des faits datés, des sources accessibles. À vous de vous faire une opinion.",
+  figures_title: "La campagne, en repères",
+  profiles_label: "personnalités suivies",
+  positions_label: "propositions documentées",
+  events_label: "rendez-vous à venir ou en cours",
+  candidates_title: "Les personnalités et leurs idées",
+  primaries_title: "Les étapes avant la présidentielle",
+  primaries_description: "Primaires, désignations et dates clés : comprendre comment se dessine la campagne.",
+  methodology: "Les profils suivis ne constituent pas une liste officielle de candidats. Les propositions sont présentées avec leur date et leur source ; leur présence ne vaut pas approbation. Les sondages décrivent une enquête et un scénario donnés, pas un résultat électoral. Consultez les sources et la méthode avant toute comparaison.",
+};
+
 function date(value: string | null) {
   return value
     ? new Date(`${value}T12:00:00Z`).toLocaleDateString("fr-FR", {
@@ -53,7 +87,14 @@ function topicLabel(topic: string) {
 export default async function Home() {
   await connection();
 
-  const [candidatesQuery, primaryQuery, positionsQuery] = await Promise.all([
+  const [
+    candidatesQuery,
+    primaryQuery,
+    positionsQuery,
+    homepageQuery,
+    positionCountQuery,
+    eventCountQuery,
+  ] = await Promise.all([
     supabase
       .from("candidates")
       .select("id,display_name,slug,party,image_url,image_credit")
@@ -69,11 +110,26 @@ export default async function Home() {
       .eq("verification_status", "verified")
       .eq("featured", true)
       .order("position_date", { ascending: false }),
+    supabase
+      .from("homepage_content")
+      .select("eyebrow,title,subtitle,primary_label,secondary_label,banner,figures_title,profiles_label,positions_label,events_label,candidates_title,primaries_title,primaries_description,methodology")
+      .eq("id", "home")
+      .maybeSingle(),
+    supabase
+      .from("current_candidate_positions")
+      .select("id", { count: "exact", head: true })
+      .eq("verification_status", "verified"),
+    supabase
+      .from("current_political_agenda")
+      .select("id", { count: "exact", head: true }),
   ]);
 
   const candidates = (candidatesQuery.data ?? []) as Candidate[];
   const positions = (positionsQuery.data ?? []) as Position[];
   const primary = primaryQuery.data;
+  const home = (homepageQuery.data ?? homepageDefaults) as HomepageContent;
+  const documentedPositions = positionCountQuery.count ?? positions.length;
+  const trackedEvents = eventCountQuery.count ?? 0;
   const status: Record<string, string> = {
     upcoming: "À venir",
     ongoing: "En cours",
@@ -103,22 +159,19 @@ export default async function Home() {
         <div className="container hero-layout">
           <div className="hero-copy">
             <p className="hero-badge">
-              <span aria-hidden="true">✦</span> LE REPÈRE DE LA PRÉSIDENTIELLE
+              <span aria-hidden="true">✦</span> {home.eyebrow}
             </p>
-            <h1>2027.<br />Les idées.<br /><em>Votre regard.</em></h1>
-            <p className="lead">
-              Candidats, propositions, sondages.<br />
-              L’essentiel pour vous faire votre opinion.
-            </p>
+            <h1>{home.title}</h1>
+            <p className="lead">{home.subtitle}</p>
             <div className="actions">
               <a className="button primary" href="/candidats">
-                Découvrir les candidats <span aria-hidden="true">↗</span>
+                {home.primary_label} <span aria-hidden="true">↗</span>
               </a>
               <a className="button secondary" href="/comparer">
-                Comparer les mesures <span aria-hidden="true">→</span>
+                {home.secondary_label} <span aria-hidden="true">→</span>
               </a>
             </div>
-            <p className="hero-footnote">Des faits datés. Des sources à consulter.</p>
+            <p className="hero-footnote">{home.banner}</p>
           </div>
 
           <div className="hero-visual" aria-label="Explorer la campagne">
@@ -179,11 +232,25 @@ export default async function Home() {
         </a>
       </div>
 
+      <section className="container homepage-figures" aria-labelledby="homepage-figures-title">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">REPÈRES</p>
+            <h2 id="homepage-figures-title">{home.figures_title}<span className="accent-dot">.</span></h2>
+          </div>
+        </div>
+        <dl className="homepage-figure-grid">
+          <div><dt>{home.profiles_label}</dt><dd>{candidates.length}</dd></div>
+          <div><dt>{home.positions_label}</dt><dd>{documentedPositions}</dd></div>
+          <div><dt>{home.events_label}</dt><dd>{trackedEvents}</dd></div>
+        </dl>
+      </section>
+
       <section className="container candidates-section" id="candidats">
         <div className="section-heading">
           <div>
             <p className="eyebrow">01 / LES PERSONNALITÉS SUIVIES</p>
-            <h2>Les visages de 2027<span className="accent-dot">.</span></h2>
+            <h2>{home.candidates_title}<span className="accent-dot">.</span></h2>
           </div>
           <span className="section-chip">{candidates.length} profils</span>
         </div>
@@ -273,8 +340,8 @@ export default async function Home() {
           <div className="primary-symbol" aria-hidden="true">↗</div>
           <div>
             <p className="eyebrow">LE CHEMIN VERS 2027</p>
-            <h2>Qui sera désigné ?</h2>
-            <p>Les primaires, les candidats et les dates clés.</p>
+            <h2>{home.primaries_title}</h2>
+            <p>{home.primaries_description}</p>
             {primary && (
               <div className="process-dates">
                 <span>{status[primary.status] ?? primary.status}</span>
@@ -289,6 +356,11 @@ export default async function Home() {
       </section>
 
       <CampaignFeed />
+
+      <section className="container methodology-note homepage-methodology" aria-labelledby="homepage-methodology-title">
+        <strong id="homepage-methodology-title">Méthode et périmètre</strong>
+        <p>{home.methodology}</p>
+      </section>
 
       <footer className="container footer">
         <a className="brand" href="/">Élections <span>2027</span></a>

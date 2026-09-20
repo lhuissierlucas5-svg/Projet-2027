@@ -2,6 +2,13 @@ export type Field = {key:string; label:string; type?:"textarea"|"date"|"number"|
 export type Section = {table:string; label:string; title:string; fields:Field[]; create?:Record<string,unknown>; archive?:boolean};
 const source:Field[] = [{key:"source_name",label:"Nom de la source",required:true},{key:"source_url",label:"Lien de la source",type:"url",required:true},{key:"source_excerpt",label:"Passage exact de l’article (300 caractères maximum)",type:"textarea"}];
 export const sections:Section[] = [
+ {table:"homepage_content",label:"Accueil",title:"title",fields:[
+  {key:"eyebrow",label:"Surtitre",required:true},{key:"title",label:"Titre principal",required:true},{key:"subtitle",label:"Introduction",type:"textarea",required:true},
+  {key:"primary_label",label:"Bouton candidats",required:true},{key:"secondary_label",label:"Bouton comparateur",required:true},{key:"banner",label:"Phrase de réassurance",type:"textarea",required:true},
+  {key:"figures_title",label:"Titre des repères",required:true},{key:"profiles_label",label:"Libellé du nombre de profils",required:true},{key:"positions_label",label:"Libellé du nombre de propositions",required:true},{key:"events_label",label:"Libellé du nombre de rendez-vous",required:true},
+  {key:"candidates_title",label:"Titre de la section candidats",required:true},{key:"primaries_title",label:"Titre de la section désignations",required:true},{key:"primaries_description",label:"Introduction de la section désignations",type:"textarea",required:true},
+  {key:"methodology",label:"Méthode et périmètre",type:"textarea",required:true}
+ ]},
  {table:"political_agenda",label:"Agenda",title:"title",archive:true,create:{category:"meeting",status:"upcoming"},fields:[
   {key:"slug",label:"Identifiant du rendez-vous",required:true},{key:"title",label:"Titre",required:true},{key:"summary",label:"Résumé",type:"textarea",required:true},
   {key:"sort_date",label:"Premier jour",type:"date",required:true},{key:"end_date",label:"Dernier jour (si plusieurs jours)",type:"date"},{key:"date_label",label:"Date affichée",required:true},
