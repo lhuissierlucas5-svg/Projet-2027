@@ -175,20 +175,9 @@ export default async function Home() {
           </div>
 
           <div className="hero-visual" aria-label="Explorer la campagne">
-            <div className="french-flag" aria-hidden="true"><span /><span /><span /></div>
-            <div className="orbit orbit-one" aria-hidden="true" />
-            <div className="orbit orbit-two" aria-hidden="true" />
-            <div className="election-tile">
-              <div className="election-tile-kicker">
-                <span aria-hidden="true" />
-                <span>PRÉSIDENTIELLE</span>
-                <span aria-hidden="true" />
-              </div>
-              <strong>2027</strong>
-              <div className="election-tile-tricolor" aria-hidden="true">
-                <span /><span /><span />
-              </div>
-              <small>Comparer les idées.<br />Vérifier les sources.</small>
+            <div className="flag-year-lockup" aria-label="Présidentielle 2027">
+              <div className="french-flag" aria-hidden="true"><span /><span /><span /></div>
+              <strong className="election-year" aria-hidden="true">2027</strong>
             </div>
             <a href="/sondages" className="visual-note note-polls">
               <span className="note-icon" aria-hidden="true">▥</span>
@@ -214,7 +203,6 @@ export default async function Home() {
                 <small>Mesures & positions concrètes</small>
               </span>
             </a>
-            <span className="visual-spark" aria-hidden="true">✳</span>
           </div>
         </div>
       </section>
