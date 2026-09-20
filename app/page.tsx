@@ -1,4 +1,6 @@
 import { sourceUrl, sourceLinkTitle } from "../lib/source-url";
+import HomeIntro from "./home-intro";
+import { readHomeContent } from "../lib/home-content";
 import CampaignFeed from "./campaign-feed";
 import SiteNav from "./site-nav";
 import { connection } from "next/server";
@@ -53,7 +55,7 @@ function topicLabel(topic: string) {
 export default async function Home() {
   await connection();
 
-  const [candidatesQuery, primaryQuery, positionsQuery] = await Promise.all([
+  const [candidatesQuery, primaryQuery, positionsQuery, homeQuery, positionCount, eventCount] = await Promise.all([
     supabase
       .from("candidates")
       .select("id,display_name,slug,party,image_url,image_credit")
@@ -69,8 +71,12 @@ export default async function Home() {
       .eq("verification_status", "verified")
       .eq("featured", true)
       .order("position_date", { ascending: false }),
+    supabase.from("homepage_content").select("*").eq("id", "home").maybeSingle(),
+    supabase.from("current_candidate_positions").select("id", { count: "exact", head: true }).eq("verification_status", "verified"),
+    supabase.from("current_political_agenda").select("id", { count: "exact", head: true }).in("status", ["upcoming", "ongoing", "date_tbc"]),
   ]);
 
+  const content = readHomeContent(homeQuery.data);
   const candidates = (candidatesQuery.data ?? []) as Candidate[];
   const positions = (positionsQuery.data ?? []) as Position[];
   const primary = primaryQuery.data;
@@ -95,75 +101,21 @@ export default async function Home() {
 
   return (
     <main className="page">
-      <a className="skip-link" href="/candidats">Aller au contenu</a>
+      <a className="skip-link" href="#contenu">Aller au contenu</a>
 
       <SiteNav />
 
-      <section className="hero">
-        <div className="container hero-layout">
-          <div className="hero-copy">
-            <p className="hero-badge">
-              <span aria-hidden="true">✦</span> LE REPÈRE DE LA PRÉSIDENTIELLE
-            </p>
-            <h1>2027.<br />Les idées.<br /><em>Votre regard.</em></h1>
-            <p className="lead">
-              Candidats, propositions, sondages.<br />
-              L’essentiel pour vous faire votre opinion.
-            </p>
-            <div className="actions">
-              <a className="button primary" href="/candidats">
-                Découvrir les candidats <span aria-hidden="true">↗</span>
-              </a>
-              <a className="button secondary" href="/comparer">
-                Comparer les mesures <span aria-hidden="true">→</span>
-              </a>
-            </div>
-            <p className="hero-footnote">Des faits datés. Des sources à consulter.</p>
-          </div>
-
-          <div className="hero-visual" aria-label="Explorer la campagne">
-            <div className="french-flag" aria-hidden="true"><span /><span /><span /></div>
-            <div className="orbit orbit-one" aria-hidden="true" />
-            <div className="orbit orbit-two" aria-hidden="true" />
-            <div className="election-tile">
-              <span>PRÉSIDENTIELLE</span>
-              <strong>
-                20<br />27<span className="tile-star" aria-hidden="true">✳</span>
-              </strong>
-              <small>Comprendre. Comparer. Choisir.</small>
-            </div>
-            <a href="/sondages" className="visual-note note-polls">
-              <span className="note-icon" aria-hidden="true">▥</span>
-              <span><strong>Prendre le pouls</strong><small>Les chiffres, avec leur contexte</small></span>
-              <span aria-hidden="true">↗</span>
-            </a>
-            <a href="/candidats" className="visual-note note-people">
-              <span className="avatar-stack" aria-hidden="true">
-                {candidates.slice(0, 3).map((candidate) => (
-                  <span key={candidate.id}>
-                    {candidate.image_url ? (
-                      <img src={candidate.image_url} alt="" width="40" height="40" />
-                    ) : (
-                      candidate.display_name.charAt(0)
-                    )}
-                  </span>
-                ))}
-              </span>
-              <span>
-                <strong>
-                  {candidatesQuery.error ? "Les candidats" : `${candidates.length} profils à explorer`}
-                </strong>
-                <small>Mesures & positions concrètes</small>
-              </span>
-            </a>
-            <span className="visual-spark" aria-hidden="true">✳</span>
-          </div>
-        </div>
-      </section>
+      <div id="contenu" tabIndex={-1}>
+        <HomeIntro content={content} counts={{
+          profiles: candidatesQuery.error ? null : candidates.length,
+          positions: positionCount.error ? null : positionCount.count,
+          events: eventCount.error ? null : eventCount.count,
+        }} />
+      </div>
 
       <div className="container quick-paths" aria-label="Explorer par rubrique">
         <a href="/propositions">
-          <span className="path-icon peach" aria-hidden="true">✦</span>
+          <span className="path-icon peach" aria-hidden="true">≡</span>
           <span><strong>Les idées</strong><small>Ce qu’ils proposent</small></span>
           <span aria-hidden="true">↗</span>
         </a>
@@ -183,9 +135,9 @@ export default async function Home() {
         <div className="section-heading">
           <div>
             <p className="eyebrow">01 / LES PERSONNALITÉS SUIVIES</p>
-            <h2>Les visages de 2027<span className="accent-dot">.</span></h2>
+            <h2>{content.candidates_title}</h2>
           </div>
-          <span className="section-chip">{candidates.length} profils</span>
+          <span className="section-chip">{candidatesQuery.error ? "Profils indisponibles" : `${candidates.length} profils`}</span>
         </div>
 
         {candidatesQuery.error ? (
@@ -273,8 +225,8 @@ export default async function Home() {
           <div className="primary-symbol" aria-hidden="true">↗</div>
           <div>
             <p className="eyebrow">LE CHEMIN VERS 2027</p>
-            <h2>Qui sera désigné ?</h2>
-            <p>Les primaires, les candidats et les dates clés.</p>
+            <h2>{content.primaries_title}</h2>
+            <p>{content.primaries_description}</p>
             {primary && (
               <div className="process-dates">
                 <span>{status[primary.status] ?? primary.status}</span>
@@ -289,6 +241,13 @@ export default async function Home() {
       </section>
 
       <CampaignFeed />
+
+      <section className="container editorial-method" aria-labelledby="method-title">
+        <p className="eyebrow">NOTRE MÉTHODE</p>
+        <h2 id="method-title">Des repères pour lire la campagne</h2>
+        <p>{content.methodology}</p>
+        <a href="/suivi">Consulter le suivi des actualisations →</a>
+      </section>
 
       <footer className="container footer">
         <a className="brand" href="/">Élections <span>2027</span></a>

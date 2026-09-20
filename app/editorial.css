@@ -1,0 +1,51 @@
+/* Editorial home and its administration: scoped to preserve the other pages. */
+.editorial-hero { padding:64px 0 56px; background:#faf9f6; border-bottom:1px solid #dededb; }
+.editorial-hero-grid { display:grid; grid-template-columns:minmax(0,1.6fr) minmax(280px,1fr); gap:72px; align-items:start; }
+.editorial-copy { min-width:0; }
+.editorial-eyebrow { display:flex; align-items:center; gap:14px; font-size:12px; font-weight:750; letter-spacing:.09em; color:#343e54; margin:0 0 28px; }
+.republic-flag { display:inline-block; flex:0 0 42px; width:42px; height:28px; background:linear-gradient(90deg,#000091 0 33.333%,#fff 33.333% 66.666%,#ce1126 66.666%); border:1px solid #d4d5db; box-shadow:0 2px 4px #17233b0a; }
+.editorial-title { font-family:Georgia,'Times New Roman',serif; font-size:clamp(38px,4.5vw,64px); font-weight:500; line-height:1.08; letter-spacing:-.035em; color:#17233b; margin:0 0 24px; overflow-wrap:anywhere; text-wrap:balance; }
+.editorial-lead { font-size:18px; line-height:1.75; max-width:60ch; margin:0 0 28px; color:#4a5568; white-space:pre-line; overflow-wrap:anywhere; }
+.editorial-actions { gap:12px; flex-wrap:wrap; }
+.editorial-actions .button { min-height:48px; font-size:14px; padding:14px 18px; border-radius:5px; white-space:normal; overflow-wrap:anywhere; }
+.editorial-actions .secondary { background:transparent; border:1px solid #bac0cd; color:#17233b; }
+.editorial-disclaimer { font-size:12px; color:#596274; margin-top:24px; max-width:64ch; }
+.election-tile.editorial-reference { transform:none; width:auto; padding:28px 30px; border-radius:6px; background:#000091; box-shadow:none; border-top:4px solid #ce1126; }
+.editorial-reference .reference-year { font:500 56px/1 Georgia,serif; letter-spacing:-.03em; margin:0 0 16px; color:white; }
+.editorial-reference h2 { font-size:16px; font-weight:500; color:#fff; margin:0 0 20px; letter-spacing:0; overflow-wrap:anywhere; }
+.editorial-figures { margin:0; }
+.editorial-figures>div { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:20px; padding:16px 0; border-top:1px solid #ffffff40; }
+.editorial-figures dt { font-size:14px; line-height:1.5; color:#fff; overflow-wrap:anywhere; }
+.editorial-figures dd { font-size:36px; font-weight:650; font-variant-numeric:tabular-nums; line-height:1.1; margin:0; color:#fff; }
+.editorial-reference .figures-note { font-size:12px; color:#e1e3ff; line-height:1.6; margin:20px 0 0; }
+.editorial-banner { background:white; border-bottom:1px solid #dce3ee; }
+.editorial-banner p { padding:18px 0; font-size:14px; color:#404b60; margin:0 auto; overflow-wrap:anywhere; }
+.editorial-method { border-top:1px solid #ccd1db; padding-top:36px; padding-bottom:40px; }
+.editorial-method h2 { font:500 30px/1.2 Georgia,serif; }
+.editorial-method>p:not(.eyebrow) { max-width:90ch; color:#4a5568; white-space:pre-line; overflow-wrap:anywhere; }
+.editorial-method a { font-size:14px; color:#000091; text-decoration:underline; text-underline-offset:4px; }
+.page>.quick-paths .path-icon { background:#eef0f5; color:#000091; border-radius:5px; }
+.page>.candidates-section .candidate-key-number strong { font-size:clamp(28px,3vw,38px); overflow-wrap:anywhere; }
+.page>.candidates-section .candidate-key-number { align-items:flex-start; }
+.admin-page button.admin-primary,.admin-tabs button[aria-pressed=true] { background:#000091; border-color:#000091; }
+.admin-home-layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:28px; align-items:start; }
+.admin-home-layout>.management-card { margin:0; }
+.admin-home-form fieldset { border:0; padding:0; margin:0 0 28px; min-width:0; }
+.admin-home-form legend { font-size:19px; font-weight:700; border-bottom:1px solid #dce3ee; padding-bottom:10px; margin-bottom:18px; width:100%; }
+.admin-home-form label small { font-weight:400; color:#59667a; }
+.admin-home-preview { overflow:hidden; border:1px solid #dce3ee; border-radius:10px; background:#faf9f6; }
+.admin-home-preview .editorial-hero { padding:28px 0; }
+.admin-home-preview .container { width:calc(100% - 40px); }
+.admin-home-preview .editorial-hero-grid { grid-template-columns:1fr; gap:24px; }
+.admin-home-preview .editorial-title { font-size:34px; }
+.admin-home-preview .editorial-lead { font-size:16px; }
+.admin-home-preview a { pointer-events:none; }
+.admin-home-preview .editorial-disclaimer { font-size:12px; }
+.admin-home-preview .editorial-actions a { text-decoration:none; }
+.admin-home-preview .editorial-actions a.primary { color:white; }
+.admin-home-preview .editorial-method { width:calc(100% - 40px); margin:auto; }
+.admin-savebar { position:sticky; bottom:12px; padding:16px; background:white; border:1px solid #cbd2de; box-shadow:0 4px 18px #00000010; border-radius:10px; z-index:5; }
+.admin-home-status { color:#4a5568; font-size:14px; }
+.admin-page :focus-visible,.page :focus-visible { outline:3px solid #246bd1; outline-offset:4px; }
+@media(max-width:900px) { .editorial-hero-grid { gap:32px; grid-template-columns:minmax(0,1.4fr) minmax(240px,1fr); } .admin-home-layout { grid-template-columns:1fr; } }
+@media(max-width:700px) { .editorial-hero { padding:32px 0; } .editorial-hero-grid { grid-template-columns:1fr; gap:28px; } .editorial-eyebrow { font-size:11px; letter-spacing:.04em; } .editorial-lead { font-size:16px; } .editorial-actions { display:grid; grid-template-columns:1fr; } .editorial-actions .button { justify-content:space-between; } .election-tile.editorial-reference { padding:24px; } .editorial-reference .reference-year { font-size:44px; } .editorial-figures dd { font-size:32px; } }
