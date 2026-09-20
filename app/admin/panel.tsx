@@ -1,4 +1,5 @@
 "use client";
+import HomeEditor from "./home-editor";
 import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { sections, optionLabels } from "./config";
@@ -9,7 +10,8 @@ export default function AdminPanel() {
  const [access,setAccess]=useState<"loading"|"anonymous"|"denied"|"admin">("loading");
  const [email,setEmail]=useState(""); const [password,setPassword]=useState("");
  const [message,setMessage]=useState(""); const [busy,setBusy]=useState(false);
- const [sectionIndex,setSectionIndex]=useState(0); const section=sections[sectionIndex];
+ const [sectionIndex,setSectionIndex]=useState(-1); const section=sections[sectionIndex] ?? sections[0];
+ const [homeDirty,setHomeDirty]=useState(false);
  const [rows,setRows]=useState<Row[]>([]); const [candidates,setCandidates]=useState<Row[]>([]);
  const [selected,setSelected]=useState<Row|null>(null); const [draft,setDraft]=useState<Row>({});
  const [query,setQuery]=useState(""); const [loaded,setLoaded]=useState(false);
@@ -27,7 +29,7 @@ export default function AdminPanel() {
   return ()=>{active=false;subscription.unsubscribe();};
  },[]);
  useEffect(()=>{
-  if(access!=="admin")return;
+  if(access!=="admin" || sectionIndex===-1)return;
   let active=true;
   setLoaded(false);setRows([]);setSelected(null);setQuery("");setMessage("");
   async function load(){
@@ -39,14 +41,14 @@ export default function AdminPanel() {
    else {setRows((contents.data??[]) as Row[]);setCandidates((people.data??[]) as Row[]);}
    setLoaded(true);
   }void load();return()=>{active=false;};
- },[access,section.table]);
+ },[access,section.table,sectionIndex]);
  async function login(event:React.FormEvent){
   event.preventDefault();setBusy(true);setMessage("");
   const {error}=await client.auth.signInWithPassword({email,password});
   setPassword("");setBusy(false);
   if(error)setMessage("Connexion impossible. Vérifie ton adresse, ton mot de passe et la confirmation de ton compte.");
  }
- async function logout(){await client.auth.signOut();setRows([]);setSelected(null);setPassword("");setAccess("anonymous");}
+ async function logout(){if(homeDirty && !window.confirm("Quitter sans enregistrer les modifications de l’accueil ?"))return;await client.auth.signOut();setRows([]);setSelected(null);setPassword("");setAccess("anonymous");}
  function open(row:Row){if(selected && JSON.stringify(draft)!==JSON.stringify(selected) && !window.confirm("Abandonner les modifications non enregistrées ?"))return;setSelected(row);setDraft({...row});setMessage("");}
  async function save(action:"save"|"publish"|"archive"){
   if(!selected)return;
@@ -97,8 +99,8 @@ export default function AdminPanel() {
  {access==="denied"&&<section className="management-card"><h2>Accès non activé</h2><p>Ton compte est connecté, mais ne dispose pas encore de droits d’administration.</p><button onClick={logout}>Se déconnecter</button></section>}
  {access==="admin"&&<>
   <div className="admin-toolbar"><span>{email}</span><button onClick={logout}>Se déconnecter</button></div>
-  <div className="admin-tabs" role="group" aria-label="Type de contenu">{sections.map((s,i)=><button key={s.table} aria-pressed={i===sectionIndex} disabled={busy} onClick={()=>{if(!selected || JSON.stringify(draft)===JSON.stringify(selected)||window.confirm("Abandonner les modifications non enregistrées ?"))setSectionIndex(i);}}>{s.label}</button>)}</div>
-  <div className="admin-columns"><section className="management-card admin-list"><h2>{section.label}</h2>
+  <div className="admin-tabs" role="group" aria-label="Type de contenu"><button aria-pressed={sectionIndex===-1} disabled={busy} onClick={()=>{if(!selected || JSON.stringify(draft)===JSON.stringify(selected)||window.confirm("Abandonner les modifications non enregistrées ?")){setSelected(null);setSectionIndex(-1);}}}>Accueil</button>{sections.map((s,i)=><button key={s.table} aria-pressed={i===sectionIndex} disabled={busy} onClick={()=>{if(homeDirty && !window.confirm("Abandonner les modifications de l’accueil ?"))return;if(!selected || JSON.stringify(draft)===JSON.stringify(selected)||window.confirm("Abandonner les modifications non enregistrées ?"))setSectionIndex(i);}}>{s.label}</button>)}</div>
+  {sectionIndex===-1 ? <HomeEditor client={client} onDirtyChange={setHomeDirty} /> : <div className="admin-columns"><section className="management-card admin-list"><h2>{section.label}</h2>
    <label>Rechercher<input type="search" value={query} onChange={e=>setQuery(e.target.value)} /></label>
    {section.create&&<button disabled={busy} onClick={()=>open({...section.create} as Row)}>+ Ajouter un brouillon</button>}
    {!loaded&&<p>Chargement…</p>}{loaded&&!rows.length&&<p>Aucun contenu disponible.</p>}
@@ -117,7 +119,7 @@ export default function AdminPanel() {
    {source&&<a className="admin-source" href={source} target="_blank" rel="noopener noreferrer">Vérifier le passage dans la source ↗</a>}
    <div className="admin-actions"><button className="admin-primary" disabled={busy} type="submit">{busy?"Enregistrement…":"Enregistrer"}</button>
     {section.archive&&<><button type="button" disabled={busy} onClick={e=>{if(e.currentTarget.form?.reportValidity())void save("publish");}}>Vérifier et publier</button><button type="button" disabled={busy||!selected.id} onClick={()=>void save("archive")}>Archiver</button></>}
-   </div></form>}</section></div>
+   </div></form>}</section></div>}
  </>}
  {message&&<p className="admin-message" role="status">{message}</p>}
  </main>;
