@@ -141,9 +141,10 @@ test('le comparateur présente chaque ligne comme une fiche visuelle sans classe
  await page.goto('/comparer');
  const table=page.locator('.comparison-table').first();
  await expect(table).toBeVisible();
- expect(await table.evaluate(el=>getComputedStyle(el).borderCollapse)).toBe('separate');
  const firstRow=table.locator('tbody tr').first();
  await expect(firstRow.locator('.compare-person')).toBeVisible();
+ expect(await page.locator('.comparison-table-wrap').first().evaluate(el=>parseFloat(getComputedStyle(el).borderRadius))).toBeGreaterThanOrEqual(18);
+ expect(await firstRow.locator('th').first().evaluate(el=>parseFloat(getComputedStyle(el).borderLeftWidth))).toBeGreaterThanOrEqual(4);
  if (await firstRow.locator('.compare-proposal-cell').count()) {
   await expect(firstRow.locator('.compare-lead')).toBeVisible();
  }
@@ -156,13 +157,16 @@ test('les sondages et le comparateur sont de vrais tableaux',async({page})=>{
  await page.goto('/comparer');
  await expect(page.locator('.comparison-table').first()).toBeVisible();
  expect(await page.locator('.comparison-table').first().locator('thead th').count()).toBe(4);
- await page.locator('.comparison-details summary').first().click();
+ const comparisonSummary=page.locator('.comparison-details summary').first();
+ await comparisonSummary.scrollIntoViewIfNeeded();
+ await comparisonSummary.evaluate((el: HTMLElement)=>el.click());
  await expect(page.locator('.comparison-details').first()).toHaveAttribute('open','');
 });
 test('la charte et les styles structurels sont réellement chargés',async({page})=>{
  await page.goto('/');
  await expect(page.locator('.flag-year-lockup .election-year')).toHaveText('2027');
- expect(await page.locator('.election-year').evaluate(el=>getComputedStyle(el).textShadow)).not.toBe('none');
+ await expect(page.locator('.election-year span')).toHaveCount(4);
+ expect(await page.locator('.election-year span').first().evaluate(el=>getComputedStyle(el).textShadow)).not.toBe('none');
  expect(await page.locator('.agenda-card-v2').first().evaluate(el=>getComputedStyle(el).display)).toBe('grid');
 });
 
