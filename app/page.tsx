@@ -177,7 +177,9 @@ export default async function Home() {
           <div className="hero-visual" aria-label="Explorer la campagne">
             <div className="flag-year-lockup" aria-label="Présidentielle 2027">
               <div className="french-flag" aria-hidden="true"><span /><span /><span /></div>
-              <strong className="election-year" aria-hidden="true">2027</strong>
+              <strong className="election-year" aria-hidden="true">
+                <span>2</span><span>0</span><span>2</span><span>7</span>
+              </strong>
             </div>
             <a href="/sondages" className="visual-note note-polls">
               <span className="note-icon" aria-hidden="true">▥</span>
