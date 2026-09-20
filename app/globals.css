@@ -3584,3 +3584,178 @@ nav .nav-agenda { color: #fff; background: var(--fr-red); }
 .homepage-figure-grid dd{margin:8px 0 0;font-size:clamp(34px,5vw,52px);font-weight:800;line-height:1;letter-spacing:-.05em;color:var(--foreground)}
 .homepage-methodology{margin-top:42px;margin-bottom:46px}
 @media(max-width:760px){.homepage-figure-grid{grid-template-columns:1fr}}
+
+
+/* Accueil v4 — hero tricolore léger */
+.hero {
+  background:
+    radial-gradient(circle at 82% 16%, #e7ebff 0, transparent 28%),
+    radial-gradient(circle at 12% 88%, #ffe9ea 0, transparent 25%),
+    linear-gradient(180deg, #f8f9ff 0%, #f5f7ff 100%);
+}
+.hero-layout {
+  grid-template-columns: minmax(0, 1.08fr) minmax(390px, .92fr);
+  gap: 62px;
+}
+.hero-copy {
+  position: relative;
+  z-index: 3;
+}
+.hero-visual {
+  height: 430px;
+  isolation: isolate;
+}
+.hero-visual::before {
+  content: "";
+  position: absolute;
+  inset: 42px 34px 38px 18px;
+  z-index: -3;
+  border: 1px solid #dfe4f1;
+  border-radius: 42% 58% 55% 45% / 45% 43% 57% 55%;
+  background: #ffffff78;
+  box-shadow: 0 26px 70px #21345b0a;
+  transform: rotate(-2deg);
+}
+.french-flag {
+  width: 370px;
+  height: 246px;
+  left: 2px;
+  top: 92px;
+  z-index: -2;
+  opacity: .34;
+  border-radius: 32px;
+  transform: rotate(-7deg);
+  box-shadow: 0 28px 65px #06155d17;
+}
+.orbit {
+  width: 352px;
+  height: 352px;
+  border-color: #d7ddeb;
+  opacity: .8;
+}
+.orbit-two {
+  width: 420px;
+  height: 420px;
+  border-color: #e1e5ef;
+  opacity: .7;
+}
+.election-tile {
+  width: 238px;
+  min-height: 272px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 28px 27px 25px;
+  border: 1px solid #dce2ef;
+  border-radius: 28px;
+  background: #fffffff2;
+  color: #171d3b;
+  box-shadow: 0 24px 58px #1d2b511c;
+  transform: rotate(3deg) translate(42px, -1px);
+  backdrop-filter: blur(12px);
+}
+.election-tile-kicker {
+  display: grid;
+  grid-template-columns: 7px auto 7px;
+  align-items: center;
+  gap: 8px;
+  color: #3c4662;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .16em;
+}
+.election-tile-kicker > span:first-child,
+.election-tile-kicker > span:last-child {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+.election-tile-kicker > span:first-child { background: var(--fr-blue); }
+.election-tile-kicker > span:last-child { background: var(--fr-red); }
+.election-tile > strong {
+  display: block;
+  padding: 24px 0 19px;
+  color: #151b37;
+  font-size: 78px;
+  font-weight: 950;
+  line-height: .86;
+  letter-spacing: -.075em;
+}
+.election-tile-tricolor {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 100%;
+  height: 5px;
+  overflow: hidden;
+  margin-bottom: 18px;
+  border-radius: 999px;
+}
+.election-tile-tricolor span:nth-child(1) { background: var(--fr-blue); }
+.election-tile-tricolor span:nth-child(2) { background: #eceef4; }
+.election-tile-tricolor span:nth-child(3) { background: var(--fr-red); }
+.election-tile small {
+  color: #667087;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+.note-polls {
+  top: 32px;
+  right: -2px;
+  transform: rotate(2deg);
+}
+.note-people {
+  bottom: 24px;
+  left: 0;
+  transform: rotate(-2deg);
+}
+.visual-note {
+  box-shadow: 0 14px 34px #24375b12;
+}
+.visual-spark {
+  right: 5px;
+  bottom: 84px;
+  color: var(--fr-red);
+  font-size: 38px;
+}
+@media (max-width: 1000px) {
+  .hero-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(330px, .8fr);
+    gap: 28px;
+  }
+  .election-tile {
+    transform: rotate(3deg) translate(30px, -1px);
+  }
+}
+@media (max-width: 760px) {
+  .hero-layout { grid-template-columns: 1fr; }
+  .hero-visual {
+    width: min(100%, 430px);
+    height: 360px;
+    margin: -4px auto -14px;
+    transform: scale(.9);
+  }
+  .hero-visual::before { inset: 34px 20px 28px 8px; }
+  .french-flag {
+    width: 330px;
+    height: 220px;
+    left: 0;
+    top: 74px;
+  }
+  .election-tile {
+    width: 220px;
+    min-height: 250px;
+    transform: rotate(3deg) translate(34px, -2px);
+  }
+  .election-tile > strong { font-size: 70px; }
+}
+@media (max-width: 430px) {
+  .hero-visual {
+    height: 335px;
+    transform: scale(.82);
+    margin-top: -18px;
+    margin-bottom: -36px;
+  }
+  .note-polls { right: -18px; }
+  .note-people { left: -12px; }
+}

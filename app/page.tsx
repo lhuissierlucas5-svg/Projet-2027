@@ -179,11 +179,16 @@ export default async function Home() {
             <div className="orbit orbit-one" aria-hidden="true" />
             <div className="orbit orbit-two" aria-hidden="true" />
             <div className="election-tile">
-              <span>PRÉSIDENTIELLE</span>
-              <strong>
-                20<br />27<span className="tile-star" aria-hidden="true">✳</span>
-              </strong>
-              <small>Comprendre. Comparer. Choisir.</small>
+              <div className="election-tile-kicker">
+                <span aria-hidden="true" />
+                <span>PRÉSIDENTIELLE</span>
+                <span aria-hidden="true" />
+              </div>
+              <strong>2027</strong>
+              <div className="election-tile-tricolor" aria-hidden="true">
+                <span /><span /><span />
+              </div>
+              <small>Comparer les idées.<br />Vérifier les sources.</small>
             </div>
             <a href="/sondages" className="visual-note note-polls">
               <span className="note-icon" aria-hidden="true">▥</span>
