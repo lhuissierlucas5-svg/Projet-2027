@@ -3585,7 +3585,7 @@ nav .nav-agenda { color: #fff; background: var(--fr-red); }
 .homepage-methodology{margin-top:42px;margin-bottom:46px}
 @media(max-width:760px){.homepage-figure-grid{grid-template-columns:1fr}}
 
-/* Accueil v5 — 2027 directement sur le drapeau */
+/* Accueil v6 — 2027 incrusté dans le drapeau */
 .hero {
   background:
     radial-gradient(circle at 84% 18%, #e8ecff 0, transparent 29%),
@@ -3611,19 +3611,32 @@ nav .nav-agenda { color: #fff; background: var(--fr-red); }
   top: 50%;
   width: 390px;
   height: 260px;
-  transform: translate(-53%, -49%) rotate(-6deg);
+  transform: translate(-53%, -49%) rotate(-5deg);
+}
+.flag-year-lockup::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 34px;
+  background:
+    linear-gradient(125deg, #ffffff26 0 20%, transparent 38% 66%, #ffffff18 82% 100%),
+    repeating-linear-gradient(0deg, #ffffff0b 0 1px, transparent 1px 4px);
+  mix-blend-mode: soft-light;
+  pointer-events: none;
 }
 .flag-year-lockup .french-flag {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  opacity: .88;
+  opacity: .94;
   border-radius: 34px;
   transform: none;
   box-shadow:
-    0 30px 70px #12234b20,
-    inset 0 0 0 1px #ffffff99;
+    0 24px 58px #12234b1a,
+    inset 0 0 0 1px #ffffff9c,
+    inset 0 -12px 28px #1019360d;
 }
 .election-year {
   position: absolute;
@@ -3631,20 +3644,27 @@ nav .nav-agenda { color: #fff; background: var(--fr-red); }
   z-index: 2;
   display: grid;
   place-items: center;
-  color: #f7d77f;
-  font-size: 112px;
+  background:
+    linear-gradient(
+      90deg,
+      #fff4f5 0 31%,
+      #000091 31% 67%,
+      #f7f8ff 67% 100%
+    );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  font-size: 108px;
   font-weight: 950;
   line-height: 1;
-  letter-spacing: -.085em;
-  -webkit-text-stroke: 1.4px #fff5cf;
+  letter-spacing: -.082em;
+  -webkit-text-stroke: .9px #ffffff8f;
   text-shadow:
-    0 1px 0 #ffe9a8,
-    1px 2px 0 #e0b552,
-    2px 3px 0 #c7932f,
-    3px 4px 0 #a97920,
-    6px 7px 0 #243b70,
-    9px 11px 18px #101b3a3d;
-  transform: translate(-3px, -2px) rotate(1.2deg);
+    0 1px 0 #ffffff8c,
+    0 2px 0 #24356530,
+    0 5px 12px #1019362b;
+  filter: saturate(.94);
+  transform: translate(-2px, -1px) rotate(.7deg);
 }
 .visual-note {
   border: 1px solid #d9dfef;
@@ -3669,7 +3689,7 @@ nav .nav-agenda { color: #fff; background: var(--fr-red); }
     width: 350px;
     height: 233px;
   }
-  .election-year { font-size: 101px; }
+  .election-year { font-size: 98px; }
 }
 @media (max-width: 760px) {
   .hero-layout { grid-template-columns: 1fr; }
@@ -3681,9 +3701,9 @@ nav .nav-agenda { color: #fff; background: var(--fr-red); }
   .flag-year-lockup {
     width: 330px;
     height: 220px;
-    transform: translate(-52%, -50%) rotate(-6deg);
+    transform: translate(-52%, -50%) rotate(-5deg);
   }
-  .election-year { font-size: 94px; }
+  .election-year { font-size: 92px; }
   .note-polls { right: -10px; top: 12px; }
   .note-people { left: -8px; bottom: 12px; }
 }
@@ -3698,7 +3718,7 @@ nav .nav-agenda { color: #fff; background: var(--fr-red); }
     width: 310px;
     height: 207px;
   }
-  .election-year { font-size: 88px; }
+  .election-year { font-size: 86px; }
   .note-polls { right: -20px; }
   .note-people { left: -16px; }
 }
