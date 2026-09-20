@@ -3627,45 +3627,43 @@ nav .nav-agenda { color: #fff; background: var(--fr-red); }
 }
 .election-year {
   position: absolute;
-  inset: 0;
+  inset: 0 11%;
   z-index: 2;
-  font-size: 104px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: center;
+  font-size: 94px;
   font-weight: 950;
   line-height: 1;
-  letter-spacing: -.09em;
+  letter-spacing: 0;
   transform: rotate(.6deg);
   pointer-events: none;
 }
 .election-year span {
-  position: absolute;
-  top: 50%;
   display: block;
-  transform: translate(-50%, -52%);
+  min-width: 0;
   text-align: center;
+  transform: translateY(-2%);
 }
 .election-year span:nth-child(1) {
-  left: 16.5%;
   color: #ffffff;
   text-shadow:
     0 2px 0 #00009166,
     0 5px 12px #0000912b;
 }
 .election-year span:nth-child(2) {
-  left: 42%;
   color: #e1000f;
   text-shadow:
     0 1px 0 #ffffff,
     0 4px 10px #e1000f24;
 }
 .election-year span:nth-child(3) {
-  left: 58%;
-  color: #e1000f;
+  color: #000091;
   text-shadow:
     0 1px 0 #ffffff,
-    0 4px 10px #e1000f24;
+    0 4px 10px #00009124;
 }
 .election-year span:nth-child(4) {
-  left: 83.5%;
   color: #ffffff;
   text-shadow:
     0 2px 0 #e1000f66,
@@ -3694,7 +3692,7 @@ nav .nav-agenda { color: #fff; background: var(--fr-red); }
     width: 350px;
     height: 233px;
   }
-  .election-year { font-size: 94px; }
+  .election-year { font-size: 86px; }
 }
 @media (max-width: 760px) {
   .hero-layout { grid-template-columns: 1fr; }
@@ -3708,7 +3706,7 @@ nav .nav-agenda { color: #fff; background: var(--fr-red); }
     height: 220px;
     transform: translate(-52%, -50%) rotate(-5deg);
   }
-  .election-year { font-size: 88px; }
+  .election-year { font-size: 81px; }
   .note-polls { right: -10px; top: 12px; }
   .note-people { left: -8px; bottom: 12px; }
 }
@@ -3723,7 +3721,7 @@ nav .nav-agenda { color: #fff; background: var(--fr-red); }
     width: 310px;
     height: 207px;
   }
-  .election-year { font-size: 82px; }
+  .election-year { font-size: 76px; }
   .note-polls { right: -20px; }
   .note-people { left: -16px; }
 }
