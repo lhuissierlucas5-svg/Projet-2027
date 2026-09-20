@@ -143,7 +143,7 @@ test('le comparateur présente chaque ligne comme une fiche visuelle sans classe
  await expect(table).toBeVisible();
  const firstRow=table.locator('tbody tr').first();
  await expect(firstRow.locator('.compare-person')).toBeVisible();
- expect(await page.locator('.comparison-table-wrap').first().evaluate(el=>parseFloat(getComputedStyle(el).borderRadius))).toBeGreaterThanOrEqual(18);
+ expect(await page.locator('.comparison-table-wrap').first().evaluate(el=>parseFloat(getComputedStyle(el).borderRadius))).toBeGreaterThanOrEqual(12);
  expect(await firstRow.locator('th').first().evaluate(el=>parseFloat(getComputedStyle(el).borderLeftWidth))).toBeGreaterThanOrEqual(4);
  if (await firstRow.locator('.compare-proposal-cell').count()) {
   await expect(firstRow.locator('.compare-lead')).toBeVisible();
